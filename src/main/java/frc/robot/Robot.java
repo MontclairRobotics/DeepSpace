@@ -1,9 +1,9 @@
-package frc.team555;
+package frc.robot;
 
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.team555.Controls.DriverControls;
-import frc.team555.Hardware.Drivetrain;
+import frc.robot.Controls.DriverControls;
+import frc.robot.Hardware.Drivetrain;
 import org.montclairrobotics.cyborg.CBHardwareAdapter;
 import org.montclairrobotics.cyborg.Cyborg;
 import org.montclairrobotics.cyborg.behaviors.CBStdDriveBehavior;
@@ -28,7 +28,7 @@ public class Robot extends Cyborg {
 
         pdb = ha.add(new CBPDB());
 
-        navx = ha.add(new CBNavX(SPI.Port.kMXP));
+        // navx = ha.add(new CBNavX(SPI.Port.kMXP));
 
         // Instantiate and Initialize
         driverControls   = new DriverControls(this, ha);
