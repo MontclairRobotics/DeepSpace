@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Controls.DriverControls;
 import frc.robot.Hardware.Drivetrain;
+import frc.robot.Mappers.SensorMapper;
 import frc.robot.Vision.CameraStreams;
 
 import org.montclairrobotics.cyborg.CBHardwareAdapter;
@@ -20,7 +21,8 @@ public class Robot extends Cyborg {
 
     DriverControls driverControls;
     Drivetrain drivetrain;
-    CameraStreams cameraStreams;
+    
+    SensorMapper sensorMapper;
 
     @Override
     public void cyborgInit() {
@@ -31,25 +33,28 @@ public class Robot extends Cyborg {
 
         pdb = ha.add(new CBPDB());
 
-        // navx = ha.add(new CBNavX(SPI.Port.kMXP));
+        navx = ha.add(new CBNavX(SPI.Port.kMXP));
 
         // Instantiate and Initialize
         driverControls   = new DriverControls(this, ha);
         drivetrain       = new Drivetrain(this, ha, pdb);
-        cameraStreams    = new CameraStreams(0,1);
 
         // Run Setups functions
         SmartDashboard.putBoolean("Driver Control Setup",driverControls.setup());
         SmartDashboard.putBoolean("Drive Train Setup",drivetrain.setup());
-        SmartDashboard.putBoolean("Driver Camera Setup",cameraStreams.setup());
 
         // Add CB Monitor Mapper
         this.addCustomMapper(
-                new CBMotorMonitorMapper(this)
-                        .add(drivetrain.getFrontLeftMotor())
-                        .add(drivetrain.getFrontRightMotor())
-                        .add(drivetrain.getBackLeftMotor())
-                        .add(drivetrain.getBackRightMotor())
+            new CBMotorMonitorMapper(this)
+                .add(drivetrain.getFrontLeftMotor())
+                .add(drivetrain.getFrontRightMotor())
+                .add(drivetrain.getBackLeftMotor())                       
+                .add(drivetrain.getBackRightMotor())
+        );
+
+        // Add Sensor Mapper
+        this.addCustomMapper(
+            new SensorMapper(this)
         );
 
         // Setup Behaviors

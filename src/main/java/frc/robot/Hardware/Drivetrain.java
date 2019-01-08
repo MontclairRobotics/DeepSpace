@@ -86,8 +86,13 @@ public class Drivetrain {
                         )
         );
 
-        leftEncoder = hardwareAdapter.add(new CBEncoder(1, 0, CounterBase.EncodingType.k4X, false, INCHES_PER_TICK));
-        rightEncoder = hardwareAdapter.add(new CBEncoder(3, 2, CounterBase.EncodingType.k4X, false, INCHES_PER_TICK));
+        leftEncoder = hardwareAdapter.add(
+                new CBEncoder(1, 0, CounterBase.EncodingType.k4X, false, INCHES_PER_TICK)
+        );
+
+        rightEncoder = hardwareAdapter.add(
+                new CBEncoder(3, 2, CounterBase.EncodingType.k4X, false, INCHES_PER_TICK)
+        );
 
         // setup robot controllers
         cyborg.addRobotController(
