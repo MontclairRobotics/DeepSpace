@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Controls.DriverControls;
 import frc.robot.Hardware.Drivetrain;
+import frc.robot.Vision.CameraStreams;
+
 import org.montclairrobotics.cyborg.CBHardwareAdapter;
 import org.montclairrobotics.cyborg.Cyborg;
 import org.montclairrobotics.cyborg.behaviors.CBStdDriveBehavior;
@@ -18,6 +20,7 @@ public class Robot extends Cyborg {
 
     DriverControls driverControls;
     Drivetrain drivetrain;
+    CameraStreams cameraStreams;
 
     @Override
     public void cyborgInit() {
@@ -33,10 +36,12 @@ public class Robot extends Cyborg {
         // Instantiate and Initialize
         driverControls   = new DriverControls(this, ha);
         drivetrain       = new Drivetrain(this, ha, pdb);
+        cameraStreams    = new CameraStreams(0,1);
 
         // Run Setups functions
         SmartDashboard.putBoolean("Driver Control Setup",driverControls.setup());
         SmartDashboard.putBoolean("Drive Train Setup",drivetrain.setup());
+        SmartDashboard.putBoolean("Driver Camera Setup",cameraStreams.setup());
 
         // Add CB Monitor Mapper
         this.addCustomMapper(
