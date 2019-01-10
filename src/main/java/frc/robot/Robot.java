@@ -49,21 +49,21 @@ public class Robot extends Cyborg {
         SmartDashboard.putBoolean("Driver Control Setup",driverControls.setup());
         SmartDashboard.putBoolean("Drive Train Setup",drivetrain.setup());
 
-        // Add CB Monitor Mapper
-        this.addSensorMapper(
-            new CBMotorMonitorMapper(this)
-                .add(drivetrain.getFrontLeftMotor())
-                .add(drivetrain.getFrontRightMotor())
-                .add(drivetrain.getBackLeftMotor())                       
-                .add(drivetrain.getBackRightMotor())
-        );
+        // // Add CB Monitor Mapper
+        // this.addSensorMapper(
+        //     new CBMotorMonitorMapper(this)
+        //         .add(drivetrain.getFrontLeftMotor())
+        //         .add(drivetrain.getFrontRightMotor())
+        //         .add(drivetrain.getBackLeftMotor())                       
+        //         .add(drivetrain.getBackRightMotor())
+        // );
 
 
-        // Setup Behaviors
-        this.addBehavior(new CBStdDriveBehavior(this,
-                requestData.drivetrain,
-                controlData.drivetrain)
-        );
+        // // Setup Behaviors
+        // this.addBehavior(new CBStdDriveBehavior(this,
+        //         requestData.drivetrain,
+        //         controlData.drivetrain)
+        // );
 
     }
 

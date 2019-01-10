@@ -54,9 +54,9 @@ public class Drivetrain {
     public boolean setup(){
 
         frontLeftMotor = hardwareAdapter.add(
-                new CBTalonSRX(1)
+                new CBTalonSRX(4)
                         .setDeviceName("DriveTrain", "frontLeft")
-                        .setPowerSource(pdb, 0)
+                        .setPowerSource(pdb, 4)
                         .setSpeedControllerFaultCriteria(
                                 new CBSpeedControllerFaultCriteria()
                                         .setBasic(.1, 1, 30)
@@ -64,7 +64,7 @@ public class Drivetrain {
         );
 
         frontRightMotor = hardwareAdapter.add(
-                new CBTalonSRX(7)
+                new CBTalonSRX(1)
                         .setDeviceName("DriveTrain", "frontRight")
                         .setPowerSource(pdb, 1)
                         .setSpeedControllerFaultCriteria(
@@ -74,9 +74,9 @@ public class Drivetrain {
         );
 
         backLeftMotor = hardwareAdapter.add(
-                new CBTalonSRX(3)
+                new CBTalonSRX(2)
                         .setDeviceName("DriveTrain", "backLeft")
-                        .setPowerSource(pdb, 2)
+                        .setPowerSource(pdb, 3)
                         .setSpeedControllerFaultCriteria(
                                 new CBSpeedControllerFaultCriteria()
                                         .setBasic(.1, 1, 30)
@@ -84,9 +84,9 @@ public class Drivetrain {
         );
 
         backRightMotor = hardwareAdapter.add(
-                new CBTalonSRX(8)
+                new CBTalonSRX(3)
                         .setDeviceName("DriveTrain", "backRight")
-                        .setPowerSource(pdb, 3)
+                        .setPowerSource(pdb, 2)
                         .setSpeedControllerFaultCriteria(
                                 new CBSpeedControllerFaultCriteria()
                                         .setBasic(.1, 1, 30)
@@ -101,41 +101,41 @@ public class Drivetrain {
                 new CBEncoder(3, 2, CounterBase.EncodingType.k4X, false, INCHES_PER_TICK)
         );
 
-        // setup robot controllers
-        cyborg.addRobotController(
-                new CBDifferentialDriveController(cyborg, cbDriveControlData)
-                        .addLeftDriveModule(
-                                new CBDriveModule(
-                                        new CB2DVector(-1, 0), 0)
-                                        .addSpeedControllerArray(
-                                                new CBSimpleSpeedControllerArray()
-                                                        .setDriveMode(CBEnums.CBDriveMode.Power)
-                                                        .addSpeedController(frontLeftMotor)
-                                                        .addSpeedController(backLeftMotor)
-                                                        .setEncoder(leftEncoder)
-                                                        .setErrorCorrection(
-                                                                new CBPIDErrorCorrection()
-                                                                        .setConstants(new double[]{1.5, 0, 0.0015}
-                                                                        )
-                                                        )
-                                        )
-                        )
-                        .addRightDriveModule(
-                                new CBDriveModule(new CB2DVector(1, 0), 180)
-                                        .addSpeedControllerArray(
-                                                new CBSimpleSpeedControllerArray()
-                                                        .setDriveMode(CBEnums.CBDriveMode.Power)
-                                                        .addSpeedController(frontRightMotor)
-                                                        .addSpeedController(backRightMotor)
-                                                        .setEncoder(rightEncoder)
-                                                        .setErrorCorrection(
-                                                                new CBPIDErrorCorrection()
-                                                                        .setConstants(new double[]{1.5, 0, 0.0015}
-                                                                        )
-                                                        )
-                                        )
-                        )
-        );
+        // // setup robot controllers
+        // cyborg.addRobotController(
+        //         new CBDifferentialDriveController(cyborg, cbDriveControlData)
+        //                 .addLeftDriveModule(
+        //                         new CBDriveModule(
+        //                                 new CB2DVector(-1, 0), 0)
+        //                                 .addSpeedControllerArray(
+        //                                         new CBSimpleSpeedControllerArray()
+        //                                                 .setDriveMode(CBEnums.CBDriveMode.Power)
+        //                                                 .addSpeedController(frontLeftMotor)
+        //                                                 .addSpeedController(backLeftMotor)
+        //                                                 .setEncoder(leftEncoder)
+        //                                                 .setErrorCorrection(
+        //                                                         new CBPIDErrorCorrection()
+        //                                                                 .setConstants(new double[]{1.5, 0, 0.0015}
+        //                                                                 )
+        //                                                 )
+        //                                 )
+        //                 )
+        //                 .addRightDriveModule(
+        //                         new CBDriveModule(new CB2DVector(1, 0), 180)
+        //                                 .addSpeedControllerArray(
+        //                                         new CBSimpleSpeedControllerArray()
+        //                                                 .setDriveMode(CBEnums.CBDriveMode.Power)
+        //                                                 .addSpeedController(frontRightMotor)
+        //                                                 .addSpeedController(backRightMotor)
+        //                                                 .setEncoder(rightEncoder)
+        //                                                 .setErrorCorrection(
+        //                                                         new CBPIDErrorCorrection()
+        //                                                                 .setConstants(new double[]{1.5, 0, 0.0015}
+        //                                                                 )
+        //                                                 )
+        //                                 )
+        //                 )
+        // );
 
         return true;
     }
