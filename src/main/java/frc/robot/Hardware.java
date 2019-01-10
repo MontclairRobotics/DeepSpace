@@ -6,9 +6,9 @@ public class Hardware {
     
     public class DeviceID {
         // Drive Train ID's
-        public static final int DRIVE_RIGHT_FRONT = 0;
-        public static final int DRIVE_RIGHT_BACK = 1;
-        public static final int DRIVE_LEFT_FRONT = 2;
+        public static final int DRIVE_RIGHT_FRONT = 1;
+        public static final int DRIVE_RIGHT_BACK = 2;
+        public static final int DRIVE_LEFT_FRONT = 4;
         public static final int DRIVE_LEFT_BACK = 3;
     }
     
