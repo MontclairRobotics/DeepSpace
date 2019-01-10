@@ -30,8 +30,6 @@ public class Robot extends SprocketRobot {
         } catch (InvalidDriveTrainException e) {
             e.printStackTrace();
         }
-
-        dt.setDefaultInput(Control.dt_input);
         
     }
 }
