@@ -1,18 +1,17 @@
 package frc.robot.Hardware;
 
 import edu.wpi.first.wpilibj.CounterBase;
-import org.montclairrobotics.cyborg.CBHardwareAdapter;
 import org.montclairrobotics.cyborg.Cyborg;
-import org.montclairrobotics.cyborg.assemblies.CBDriveModule;
-import org.montclairrobotics.cyborg.assemblies.CBVictorArrayController;
-import org.montclairrobotics.cyborg.controllers.CBDifferentialDriveController;
-import org.montclairrobotics.cyborg.devices.CBDeviceID;
-import org.montclairrobotics.cyborg.devices.CBEncoder;
-import org.montclairrobotics.cyborg.devices.CBSpeedControllerFaultCriteria;
-import org.montclairrobotics.cyborg.devices.CBTalonSRX;
-import org.montclairrobotics.cyborg.utils.CB2DVector;
-import org.montclairrobotics.cyborg.utils.CBEnums;
-import org.montclairrobotics.cyborg.utils.CBPIDErrorCorrection;
+import org.montclairrobotics.cyborg.core.assemblies.CBDriveModule;
+import org.montclairrobotics.cyborg.core.assemblies.CBSimpleSpeedControllerArray;
+import org.montclairrobotics.cyborg.core.assemblies.CBSrxArray;
+import org.montclairrobotics.cyborg.core.assemblies.CBVictorArray;
+import org.montclairrobotics.cyborg.core.controllers.CBDifferentialDriveController;
+import org.montclairrobotics.cyborg.core.data.CBDriveControlData;
+import org.montclairrobotics.cyborg.core.utils.CB2DVector;
+import org.montclairrobotics.cyborg.core.utils.CBEnums;
+import org.montclairrobotics.cyborg.core.utils.CBPIDErrorCorrection;
+import org.montclairrobotics.cyborg.devices.*;
 
 public class Drivetrain {
 
@@ -24,6 +23,9 @@ public class Drivetrain {
 
     // Declare Power Distribution Board
     private CBDeviceID pdb;
+
+    // Drive Data
+    CBDriveControlData cbDriveControlData;
 
     // Declare Motors
     private CBDeviceID frontLeftMotor;
@@ -38,17 +40,22 @@ public class Drivetrain {
     // Inches Per Tick For Encoders //TODO: TEST FOR VALUE
     private final double INCHES_PER_TICK = 96 / 4499;
 
-    public Drivetrain(Cyborg cyborg,CBHardwareAdapter hardwareAdapter, CBDeviceID pdb){
+    public Drivetrain(Cyborg cyborg,
+                      CBHardwareAdapter hardwareAdapter,
+                      CBDeviceID pdb,
+                      CBDriveControlData cbDriveControlData){
+
         this.cyborg = cyborg;
         this.hardwareAdapter = hardwareAdapter;
         this.pdb = pdb;
+        this.cbDriveControlData = cbDriveControlData;
     }
 
     public boolean setup(){
 
         frontLeftMotor = hardwareAdapter.add(
                 new CBTalonSRX(1)
-                        .setDeviceName("DriveTrain", "FrontLeft")
+                        .setDeviceName("DriveTrain", "frontLeft")
                         .setPowerSource(pdb, 0)
                         .setSpeedControllerFaultCriteria(
                                 new CBSpeedControllerFaultCriteria()
@@ -58,7 +65,7 @@ public class Drivetrain {
 
         frontRightMotor = hardwareAdapter.add(
                 new CBTalonSRX(7)
-                        .setDeviceName("DriveTrain", "FrontRight")
+                        .setDeviceName("DriveTrain", "frontRight")
                         .setPowerSource(pdb, 1)
                         .setSpeedControllerFaultCriteria(
                                 new CBSpeedControllerFaultCriteria()
@@ -68,7 +75,7 @@ public class Drivetrain {
 
         backLeftMotor = hardwareAdapter.add(
                 new CBTalonSRX(3)
-                        .setDeviceName("DriveTrain", "BackLeft")
+                        .setDeviceName("DriveTrain", "backLeft")
                         .setPowerSource(pdb, 2)
                         .setSpeedControllerFaultCriteria(
                                 new CBSpeedControllerFaultCriteria()
@@ -78,7 +85,7 @@ public class Drivetrain {
 
         backRightMotor = hardwareAdapter.add(
                 new CBTalonSRX(8)
-                        .setDeviceName("DriveTrain", "BackRight")
+                        .setDeviceName("DriveTrain", "backRight")
                         .setPowerSource(pdb, 3)
                         .setSpeedControllerFaultCriteria(
                                 new CBSpeedControllerFaultCriteria()
@@ -96,12 +103,12 @@ public class Drivetrain {
 
         // setup robot controllers
         cyborg.addRobotController(
-                new CBDifferentialDriveController(cyborg)
+                new CBDifferentialDriveController(cyborg, cbDriveControlData)
                         .addLeftDriveModule(
                                 new CBDriveModule(
                                         new CB2DVector(-1, 0), 0)
                                         .addSpeedControllerArray(
-                                                new CBVictorArrayController()
+                                                new CBSimpleSpeedControllerArray()
                                                         .setDriveMode(CBEnums.CBDriveMode.Power)
                                                         .addSpeedController(frontLeftMotor)
                                                         .addSpeedController(backLeftMotor)
@@ -116,7 +123,7 @@ public class Drivetrain {
                         .addRightDriveModule(
                                 new CBDriveModule(new CB2DVector(1, 0), 180)
                                         .addSpeedControllerArray(
-                                                new CBVictorArrayController()
+                                                new CBSimpleSpeedControllerArray()
                                                         .setDriveMode(CBEnums.CBDriveMode.Power)
                                                         .addSpeedController(frontRightMotor)
                                                         .addSpeedController(backRightMotor)

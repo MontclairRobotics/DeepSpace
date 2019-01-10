@@ -1,11 +1,12 @@
 package frc.robot.Controls;
 
-import org.montclairrobotics.cyborg.CBHardwareAdapter;
 import org.montclairrobotics.cyborg.Cyborg;
+import org.montclairrobotics.cyborg.core.data.CBStdDriveRequestData;
+import org.montclairrobotics.cyborg.core.mappers.CBArcadeDriveMapper;
 import org.montclairrobotics.cyborg.devices.CBAxis;
 import org.montclairrobotics.cyborg.devices.CBButton;
 import org.montclairrobotics.cyborg.devices.CBDeviceID;
-import org.montclairrobotics.cyborg.mappers.CBArcadeDriveMapper;
+import org.montclairrobotics.cyborg.devices.CBHardwareAdapter;
 
 public class DriverControls {
 
@@ -15,6 +16,8 @@ public class DriverControls {
     // Cyborg Hardware Adapter
     private CBHardwareAdapter hardwareAdapter;
 
+    CBStdDriveRequestData cbStdDriveRequestData;
+
     // Joystick USB Port
     private final int STICK_ID = 0;
 
@@ -23,9 +26,12 @@ public class DriverControls {
     private CBDeviceID yAxis;
     private CBDeviceID gyroLockButton;
 
-    public DriverControls(Cyborg cyborg, CBHardwareAdapter hardwareAdapter){
+    public DriverControls(Cyborg cyborg,
+                          CBHardwareAdapter hardwareAdapter,
+                          CBStdDriveRequestData cbStdDriveRequestData){
         this.cyborg = cyborg;
         this.hardwareAdapter = hardwareAdapter;
+        this.cbStdDriveRequestData = cbStdDriveRequestData;
 
     }
 
@@ -35,13 +41,13 @@ public class DriverControls {
         xAxis = hardwareAdapter.add(
                 new CBAxis(STICK_ID, 1)
                         .setDeadzone(0.1)
-                        .setScale(-1.0)
+//                        .setScale(-1.0)
         );
 
         yAxis = hardwareAdapter.add(
                 new CBAxis(STICK_ID, 0)
                         .setDeadzone(0.1)
-                        .setScale(-1.0)
+//                        .setScale(-1.0)
         );
 
         //Initialize Buttons
@@ -51,7 +57,7 @@ public class DriverControls {
 
         // Setup Drive Mapper
         cyborg.addTeleOpMapper(
-                new CBArcadeDriveMapper(cyborg)
+                new CBArcadeDriveMapper(cyborg, cbStdDriveRequestData)
                         .setAxes(xAxis, null, yAxis)
                         // TODO: the following line commented because the mode above was changed to Power (from speed)
                         // TODO: Tune Axis Scales
