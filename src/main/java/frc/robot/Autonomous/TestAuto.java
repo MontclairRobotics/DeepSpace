@@ -68,7 +68,7 @@ public class TestAuto extends CBAutonomous {
 
 		@Override
 		protected void doTransition() {
-			stdDriveRequestData.direction.setXY(0, modifier.getLeftTrajectory());
+			stdDriveRequestData.direction.setXY(0, 30);
 		}
 
 		@Override
