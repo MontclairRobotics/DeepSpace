@@ -71,6 +71,35 @@ public class Robot extends SprocketRobot {
             }
         });
 
-        
+        Compressor c = new Compressor(0);
+        Control.compressor.setPressAction(new ButtonAction(){
+            @Override
+            public void onAction(){
+                c.setClosedLoopControl(true);
+            }
+        });
+
+        Control.compressor.setOffAction(new ButtonAction(){
+            @Override
+            public void onAction(){
+                c.setClosedLoopControl(false);
+            }
+        });
+        Debug.msg("Pressure Switch Valve", c.getPressureSwitchValue());
+        Debug.msg("Comrpessor Current", c.getCompressorCurrent());
+
+        Solenoid s = new Solenoid(3);
+        Control.solenoid.setPressAction(new ButtonAction(){
+            @Override
+            public void onAction(){
+                s.set(true);
+            }
+        });
+        Control.solenoid.setOffAction(new ButtonAction(){
+            @Override
+            public void onAction(){
+                s.set(false);
+            }
+        });
     }
 }
