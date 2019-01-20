@@ -1,4 +1,7 @@
-# Deep Space [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+# Deep Space 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+[![Build Status](https://travis-ci.org/MontclairRobotics/DeepSpace.svg?branch=master)](https://travis-ci.org/MontclairRobotics/DeepSpace)
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/fa37d1fc82654afe9670ad1bfd685781)](https://app.codacy.com/app/H1ppx/DeepSpace?utm_source=github.com&utm_medium=referral&utm_content=MontclairRobotics/DeepSpace&utm_campaign=Badge_Grade_Dashboard)
 
