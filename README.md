@@ -1,5 +1,7 @@
 # FRC Base 2019
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/fa37d1fc82654afe9670ad1bfd685781)](https://app.codacy.com/app/H1ppx/DeepSpace?utm_source=github.com&utm_medium=referral&utm_content=MontclairRobotics/DeepSpace&utm_campaign=Badge_Grade_Dashboard)
+
 This is a base FRC project for use in 2019 and on
 
 In 2019, WPILib has been defalted for use with gradleRIO and VScode
