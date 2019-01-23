@@ -12,6 +12,8 @@ class Control{
         public static final int AUX_STICK = 0;
 
         public static final int GYRO_LOCK = 1;
+        public static final int COMPRESSOR = 3;
+        public static final int SOLENOID = 2;
     }
 
     public static Joystick driveStick;
@@ -21,10 +23,15 @@ class Control{
 
     public static ArcadeDriveInput dt_input;
 
+    public static Button compressor; 
+    public static Button solenoid;
+
     public static void init(){
         driveStick = new Joystick(Port.DRIVE_STICK);
         auxStick = new Joystick(Port.AUX_STICK);
         gyroLockButton = new JoystickButton(driveStick, Port.GYRO_LOCK);
         dt_input = new ArcadeDriveInput(driveStick);
+        compressor = new JoystickButton(driveStick, Port.COMPRESSOR);
+        solenoid = new JoystickButton(driveStick, Port.SOLENOID);
     }
 }
