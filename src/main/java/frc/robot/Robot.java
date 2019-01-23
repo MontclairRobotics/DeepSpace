@@ -5,6 +5,8 @@ import java.util.ArrayList;
 
 import org.montclairrobotics.sprocket.SprocketRobot;
 import org.montclairrobotics.sprocket.control.ButtonAction;
+import org.montclairrobotics.sprocket.control.DashboardInput;
+import org.montclairrobotics.sprocket.control.ToggleButton;
 import org.montclairrobotics.sprocket.drive.DTPipeline;
 import org.montclairrobotics.sprocket.drive.DTTarget;
 import org.montclairrobotics.sprocket.drive.DriveModule;
@@ -23,11 +25,13 @@ import org.montclairrobotics.sprocket.utils.PID;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Solenoid;
+import frc.robot.Control.Port;
 
 public class Robot extends SprocketRobot {
     DriveTrain dt;
     GyroCorrection correction;
     GyroLock lock;
+    VisionCorrection visionCorrect;
 
     @Override
     public void robotInit(){
@@ -52,6 +56,10 @@ public class Robot extends SprocketRobot {
 
         ArrayList<Step<DTTarget>> steps = new ArrayList<>();
         lock = new GyroLock(correction);
+        visionCorrect = new VisionCorrection(new DashboardInput("Hatch"), new PID(1, 0, 0));
+        visionCorrect.setTarget(200); // TODO: Test and tune
+        new ToggleButton(Control.auxStick, Port.AUTO_HATCH, visionCorrect);
+        steps.add(visionCorrect);
         steps.add(new Deadzone());
         steps.add(correction);
         dt.setPipeline(new DTPipeline(steps));
