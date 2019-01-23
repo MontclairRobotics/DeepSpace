@@ -13,8 +13,9 @@ public class Hardware {
         public static final int DRIVE_RIGHT_BACK = 2;
         public static final int DRIVE_LEFT_FRONT = 3;
         public static final int DRIVE_LEFT_BACK = 4;
-
+      
         public static final SPI.Port navxPort = SPI.Port.kMXP;
+
     }
     
 
