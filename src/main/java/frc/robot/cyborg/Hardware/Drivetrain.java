@@ -8,6 +8,7 @@ import org.montclairrobotics.cyborg.core.assemblies.CBSimpleSpeedControllerArray
 import org.montclairrobotics.cyborg.core.controllers.CBDifferentialDriveController;
 import org.montclairrobotics.cyborg.core.controllers.CBMecanumDriveController;
 import org.montclairrobotics.cyborg.core.data.CBDriveControlData;
+import org.montclairrobotics.cyborg.core.data.CBStdDriveControlData;
 import org.montclairrobotics.cyborg.core.utils.CB2DVector;
 import org.montclairrobotics.cyborg.core.utils.CBEnums;
 import org.montclairrobotics.cyborg.core.utils.CBPIDErrorCorrection;
@@ -24,8 +25,8 @@ public class Drivetrain {
     // Declare Power Distribution Board
     private CBDeviceID pdb;
 
-    // Control Data
-    ControlData controlData;
+    // Drive Control Data
+    CBStdDriveControlData driveControlData;
 
     // Declare Motors
     private CBDeviceID frontLeftMotor;
@@ -44,11 +45,13 @@ public class Drivetrain {
 
     public Drivetrain(Cyborg cyborg,
                       CBHardwareAdapter hardwareAdapter,
-                      CBDeviceID pdb){
+                      CBDeviceID pdb,
+                      CBStdDriveControlData driveControlData){
 
         this.cyborg = cyborg;
         this.hardwareAdapter = hardwareAdapter;
         this.pdb = pdb;
+        this.driveControlData = driveControlData;
     }
 
     public boolean setup(){
@@ -111,7 +114,7 @@ public class Drivetrain {
 
          // setup robot controllers
          cyborg.addRobotController(
-                 new CBMecanumDriveController(cyborg,controlData.drivetrain)
+                 new CBMecanumDriveController(cyborg,driveControlData)
                          .addDriveModule(
                                  new CBDriveModule(
                                          new CB2DVector(-1, 1), 0)

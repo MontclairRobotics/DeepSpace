@@ -41,13 +41,11 @@ public class DriverControls {
         xAxis = hardwareAdapter.add(
                 new CBAxis(STICK_ID, 1)
                         .setDeadzone(0.1)
-//                        .setScale(-1.0)
         );
 
         yAxis = hardwareAdapter.add(
                 new CBAxis(STICK_ID, 0)
                         .setDeadzone(0.1)
-//                        .setScale(-1.0)
         );
 
         //Initialize Buttons
