@@ -1,4 +1,4 @@
-package frc.robot.Controls;
+package frc.robot.cyborg.Controls;
 
 import org.montclairrobotics.cyborg.Cyborg;
 import org.montclairrobotics.cyborg.core.data.CBStdDriveRequestData;
