@@ -1,9 +1,10 @@
-package frc.robot;
+package frc.robot.test;
 
 import edu.wpi.first.wpilibj.VictorSP;
+import frc.robot.utils.SP;
+import frc.robot.core.Control;
 import org.montclairrobotics.sprocket.SprocketRobot;
 import org.montclairrobotics.sprocket.drive.ControlledMotor;
-import org.montclairrobotics.sprocket.motors.Motor;
 import org.montclairrobotics.sprocket.utils.Input;
 
 public class MotorTest extends SprocketRobot {
