@@ -4,6 +4,7 @@ package frc.robot.core;
 import java.util.ArrayList;
 
 import frc.robot.utils.FieldCentric;
+import frc.robot.utils.Pathweaver;
 import frc.robot.utils.PressureRegulator;
 import org.montclairrobotics.sprocket.SprocketRobot;
 import org.montclairrobotics.sprocket.control.ButtonAction;
@@ -53,6 +54,7 @@ public class Robot extends SprocketRobot {
     GyroLock lock;
     FieldCentric fieldCentric;
     Sensitivity sensitivity;
+    Pathweaver pathweaver;
 
     Compressor compressor;
     Solenoid solenoid;
@@ -97,6 +99,7 @@ public class Robot extends SprocketRobot {
         steps.add(correction);
         steps.add(fieldCentric);
         steps.add(sensitivity);
+        steps.add(pathweaver);
         driveTrain.setPipeline(new DTPipeline(steps));
 
         // Pneumatics
