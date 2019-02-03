@@ -1,5 +1,7 @@
-package frc.robot;
+package frc.robot.utils;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.montclairrobotics.sprocket.control.DashboardInput;
 import org.montclairrobotics.sprocket.drive.DTStep;
 import org.montclairrobotics.sprocket.drive.DTTarget;
 import org.montclairrobotics.sprocket.geometry.Degrees;
@@ -60,7 +62,7 @@ public class VisionCorrection implements DTStep, Togglable {
 
     @Override
     public DTTarget get(DTTarget dtTarget) {
-        if(enabled){
+        if(enabled && SmartDashboard.getBoolean("Hatch Detected",false)){
             return new DTTarget(
                 dtTarget.getDirection(), 
                 dtTarget.getTurn().add(new Degrees(correction.get()))
