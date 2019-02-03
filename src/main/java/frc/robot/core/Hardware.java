@@ -1,5 +1,6 @@
 package frc.robot.core;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.VictorSP;
 import frc.robot.utils.SP;
@@ -37,9 +38,17 @@ public class Hardware {
         public static final int DRIVE_LEFT_FRONT = 3;  // Backwards
         public static final int DRIVE_LEFT_BACK = 0;   // Backwards
 
+        public static final int INTAKE_MOTOR_RIGHT = 4;
+        public static final int INTAKE_MOTOR_LEFT = 5;
+
+        public static final int LIFT_MOTOR_1 = 6;
+        public static final int LIFT_MOTOR_2 = 7;
+        public static final int LIFT_MOTOR_3 = 8;
+
+        public static final int INTAKE_MOTOR_ROTATE = 9;
+
         public static final SPI.Port navxPort = SPI.Port.kMXP;
     }
-    
 
 
     public static SP dt_rightFront;
@@ -47,6 +56,13 @@ public class Hardware {
     public static SP dt_leftFront;
     public static SP dt_leftBack;
 
+    public static WPI_TalonSRX intake_right;
+    public static WPI_TalonSRX intake_left;
+    public static WPI_TalonSRX intake_rotate;
+
+    public static WPI_TalonSRX lift_1;
+    public static WPI_TalonSRX lift_2;
+    public static WPI_TalonSRX lift_3;
 
 
     public static NavXInput gyro;
@@ -58,6 +74,14 @@ public class Hardware {
         dt_rightBack =  new SP(new VictorSP(DeviceID.DRIVE_RIGHT_BACK));
         dt_leftFront =  new SP(new VictorSP(DeviceID.DRIVE_LEFT_FRONT));
         dt_leftBack =   new SP(new VictorSP(DeviceID.DRIVE_LEFT_BACK));
+
+        intake_right  = new WPI_TalonSRX(DeviceID.INTAKE_MOTOR_RIGHT);
+        intake_left   = new WPI_TalonSRX(DeviceID.INTAKE_MOTOR_LEFT);
+        intake_rotate = new WPI_TalonSRX(DeviceID.INTAKE_MOTOR_ROTATE);
+
+        lift_1        = new WPI_TalonSRX(DeviceID.LIFT_MOTOR_1);
+        lift_2        = new WPI_TalonSRX(DeviceID.LIFT_MOTOR_2);
+        lift_3        = new WPI_TalonSRX(DeviceID.LIFT_MOTOR_3);
 
         gyro = new NavXInput(DeviceID.navxPort);
     }
