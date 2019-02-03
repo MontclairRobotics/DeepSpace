@@ -42,11 +42,13 @@ public class Control{
         public static final int DRIVE_STICK = 0;
         public static final int AUX_STICK = 1;
 
+        //Drive Stick
         public static final int GYRO_LOCK = 1;
+        public static final int SOLENOID = 2;
+        public static final int COMPRESSOR = 3;
+        public static final int AUTO_HATCH = 4;
         public static final int FIELD_CENTRIC = 8;
 
-        public static final int COMPRESSOR = 3;
-        public static final int SOLENOID = 2;
     }
 
     public static Joystick driveStick;
