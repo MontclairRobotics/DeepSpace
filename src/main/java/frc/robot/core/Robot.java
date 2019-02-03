@@ -57,7 +57,6 @@ public class Robot extends SprocketRobot {
     Compressor compressor;
     Solenoid solenoid;
 
-
     @Override
     public void robotInit(){
         // Initialization
@@ -135,6 +134,7 @@ public class Robot extends SprocketRobot {
                 lock.disable();
             }
         });
+
     }
 
     @Override
