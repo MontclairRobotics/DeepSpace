@@ -1,9 +1,12 @@
 package frc.robot.utils;
 
 import org.montclairrobotics.sprocket.SprocketRobot;
+import org.montclairrobotics.sprocket.drive.DTStep;
+import org.montclairrobotics.sprocket.drive.DTTarget;
 import org.montclairrobotics.sprocket.drive.DriveTrain;
 import org.montclairrobotics.sprocket.motors.*;
 import org.montclairrobotics.sprocket.motors.Module;
+import org.montclairrobotics.sprocket.utils.Togglable;
 
 import edu.wpi.first.wpilibj.Notifier;
 
@@ -12,7 +15,7 @@ import jaci.pathfinder.PathfinderFRC;
 import jaci.pathfinder.Trajectory;
 import jaci.pathfinder.followers.EncoderFollower;
 
-public class Pathweaver{
+public class Pathweaver implements Togglable{
 
     SprocketRobot sprocketRobot;
     DriveTrain driveTrain;
@@ -73,28 +76,30 @@ public class Pathweaver{
         // You must tune the PID values on the following line!
         m_right_follower.configurePIDVA(1.0, 0.0, 0.0, 1 / k_max_velocity, 0);
     
-        m_follower_notifier = new Notifier(this::followPath);
+        m_follower_notifier = new Notifier(this::enable);
         m_follower_notifier.startPeriodic(left_trajectory.get(0).dt);
 
         return true;
     }
 
-    public void followPath() {
+    @Override
+    public void enable() {
         if (m_left_follower.isFinished() || m_right_follower.isFinished()) {
-          m_follower_notifier.stop();
+            m_follower_notifier.stop();
         } else {
-          double left_speed = m_left_follower.calculate(leftEncoder.getTicks());
-          double right_speed = m_right_follower.calculate(rightEncoder.getTicks());
-          double heading = navXInput.getAngle();
-          double desired_heading = Pathfinder.r2d(m_left_follower.getHeading());
-          double heading_difference = Pathfinder.boundHalfDegrees(desired_heading - heading);
-          double turn =  0.8 * (-1.0/80.0) * heading_difference;
-          leftModule.set(left_speed + turn);
-          rightModule.set(right_speed - turn);
+            double left_speed = m_left_follower.calculate(leftEncoder.getTicks());
+            double right_speed = m_right_follower.calculate(rightEncoder.getTicks());
+            double heading = navXInput.getAngle();
+            double desired_heading = Pathfinder.r2d(m_left_follower.getHeading());
+            double heading_difference = Pathfinder.boundHalfDegrees(desired_heading - heading);
+            double turn =  0.8 * (-1.0/80.0) * heading_difference;
+            leftModule.set(left_speed + turn);
+            rightModule.set(right_speed - turn);
         }
     }
 
-    public void stopPath(){
+    @Override
+    public void disable() {
         m_follower_notifier.stop();
         leftModule.set(0);
         rightModule.set(0);
