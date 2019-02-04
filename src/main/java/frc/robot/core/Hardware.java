@@ -1,6 +1,7 @@
 package frc.robot.core;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.VictorSP;
 import frc.robot.utils.SP;
@@ -56,13 +57,21 @@ public class Hardware {
     public static SP dt_leftFront;
     public static SP dt_leftBack;
 
+    public static Encoder dt_right_encoder;
+    public static Encoder dt_left_encoder;
+
     public static WPI_TalonSRX intake_right;
     public static WPI_TalonSRX intake_left;
     public static WPI_TalonSRX intake_rotate;
 
+    public static Encoder intake_encoder;
+    public static Encoder intake_rotate_encoder;
+
     public static WPI_TalonSRX lift_1;
     public static WPI_TalonSRX lift_2;
     public static WPI_TalonSRX lift_3;
+
+    public static Encoder lift_encoder;
 
 
     public static NavXInput gyro;

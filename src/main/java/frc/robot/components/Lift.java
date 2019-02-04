@@ -3,13 +3,13 @@ package frc.robot.components;
 import frc.robot.utils.BangBang;
 import org.montclairrobotics.sprocket.control.Button;
 import org.montclairrobotics.sprocket.control.ButtonAction;
-import org.montclairrobotics.sprocket.control.JoystickYAxis;
 import org.montclairrobotics.sprocket.loop.Updatable;
 import org.montclairrobotics.sprocket.motors.Module;
+import org.montclairrobotics.sprocket.utils.Input;
 
 public class Lift implements Updatable {
     private int[] positions = {}; // Todo: test for values
-    private JoystickYAxis override;
+    private Input<Double> override;
     private Button up;
     private Button down;
     private int pos;
@@ -17,7 +17,7 @@ public class Lift implements Updatable {
     private BangBang correction = new BangBang(50, 1);
     private Module module;
 
-    public Lift(JoystickYAxis override, Button up, Button down, Module m){
+    public Lift(Input<Double> override, Button up, Button down, Module m){
         this.override = override;
         this.up = up;
         this.down = down;
