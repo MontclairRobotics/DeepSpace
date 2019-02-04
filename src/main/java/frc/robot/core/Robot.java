@@ -5,10 +5,7 @@ import java.util.ArrayList;
 
 import frc.robot.components.Intake;
 import frc.robot.components.Lift;
-import frc.robot.utils.FieldCentric;
-import frc.robot.utils.LimitSwitch;
-import frc.robot.utils.LimitedMotor;
-import frc.robot.utils.PressureRegulator;
+import frc.robot.utils.*;
 import org.montclairrobotics.sprocket.SprocketRobot;
 import org.montclairrobotics.sprocket.control.ButtonAction;
 import org.montclairrobotics.sprocket.control.JoystickYAxis;
@@ -60,6 +57,7 @@ public class Robot extends SprocketRobot {
     GyroLock lock;
     FieldCentric fieldCentric;
     Sensitivity sensitivity;
+    Orientation orientation;
 
     Lift lift;
     Intake intake;
@@ -99,6 +97,7 @@ public class Robot extends SprocketRobot {
         correction = new GyroCorrection(Hardware.gyro, new PID(-0.3, 0, -0.00035), 90, 1);
         fieldCentric = new FieldCentric(correction);
         lock = new GyroLock(correction);
+        orientation = new Orientation(correction);
         sensitivity = new Sensitivity(0.3);
         correction.reset();
 
@@ -106,6 +105,7 @@ public class Robot extends SprocketRobot {
         ArrayList<Step<DTTarget>> steps = new ArrayList<>();
         steps.add(correction);
         steps.add(fieldCentric);
+        steps.add(orientation);
         steps.add(sensitivity);
         driveTrain.setPipeline(new DTPipeline(steps));
 
