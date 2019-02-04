@@ -22,7 +22,7 @@ public class Orientation implements DTStep, Updatable{
 
     @Override
     public DTTarget get(DTTarget dtTarget) {
-        if(Control.driveStick.getPOV() > 0){
+        if(Control.driveStick.getPOV() != -1){
             return correction.get(dtTarget);
         }else{
             return dtTarget;
