@@ -1,8 +1,5 @@
-
 package frc.robot;
-
 import java.util.ArrayList;
-
 import org.montclairrobotics.sprocket.SprocketRobot;
 import org.montclairrobotics.sprocket.control.ButtonAction;
 import org.montclairrobotics.sprocket.drive.DTPipeline;
@@ -20,15 +17,12 @@ import org.montclairrobotics.sprocket.motors.Motor;
 import org.montclairrobotics.sprocket.pipeline.Step;
 import org.montclairrobotics.sprocket.utils.Debug;
 import org.montclairrobotics.sprocket.utils.PID;
-
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Solenoid;
-
 public class Robot extends SprocketRobot {
     DriveTrain dt;
     GyroCorrection correction;
     GyroLock lock;
-
     @Override
     public void robotInit(){
         Hardware.init();
@@ -38,7 +32,6 @@ public class Robot extends SprocketRobot {
         DriveTrainBuilder dtBuilder = new DriveTrainBuilder();
         dtBuilder.addDriveModule(new DriveModule(new XY(-1, 0), new XY(0, 1), new Motor(Hardware.dt_rightFront), new Motor(Hardware.dt_rightBack)));
         dtBuilder.addDriveModule(new DriveModule(new XY(1, 0), new XY(0, -1), new Motor(Hardware.dt_leftFront), new Motor(Hardware.dt_leftBack)));
-        
         dtBuilder.setInput(Control.dt_input);
         dtBuilder.setDriveTrainType(DriveTrainType.TANK);
 
@@ -78,7 +71,6 @@ public class Robot extends SprocketRobot {
                 c.setClosedLoopControl(true);
             }
         });
-
         Control.compressor.setOffAction(new ButtonAction(){
             @Override
             public void onAction(){
@@ -101,5 +93,13 @@ public class Robot extends SprocketRobot {
                 s.set(false);
             }
         });
+        avg(1, 2, 3, 4, 5, 6, 7, 8);
     }
-}
+    public int avg(int ... nums){
+        int total = 0;
+        for(int num : nums){
+            total += num;
+        }
+        return (double)(total)/(nums.length);
+    }
+} 
