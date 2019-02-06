@@ -54,7 +54,6 @@ public class Robot extends SprocketRobot {
     GyroLock lock;
     FieldCentric fieldCentric;
     Sensitivity sensitivity;
-    Pathweaver pathweaver;
 
     Compressor compressor;
     Solenoid solenoid;
@@ -99,7 +98,6 @@ public class Robot extends SprocketRobot {
         steps.add(correction);
         steps.add(fieldCentric);
         steps.add(sensitivity);
-        steps.add(pathweaver);
         driveTrain.setPipeline(new DTPipeline(steps));
 
         // Pneumatics

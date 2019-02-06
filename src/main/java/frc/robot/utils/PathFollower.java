@@ -22,6 +22,11 @@ public class PathFollower implements DTStep, Togglable {
     private long prevUpdateTime;
     private boolean enabled;
 
+    public PathFollower(Trajectory trajectory, GyroCorrection correction){
+        this.trajectory = trajectory;
+        this.dt = trajectory.get(0).dt;
+        this.correction = correction;
+    }
 
     @Override
     public DTTarget get(DTTarget dtTarget) {

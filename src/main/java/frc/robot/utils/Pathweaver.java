@@ -19,6 +19,7 @@ import jaci.pathfinder.PathfinderFRC;
 import jaci.pathfinder.Trajectory;
 import jaci.pathfinder.followers.EncoderFollower;
 
+@Deprecated
 public class Pathweaver implements DTStep, Togglable{
 
     Trajectory trajectory;
