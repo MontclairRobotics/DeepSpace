@@ -3,6 +3,10 @@ package frc.robot;
 
 import java.util.ArrayList;
 
+import edu.wpi.cscore.CvSink;
+import edu.wpi.first.cameraserver.CameraServer;
+import frc.robot.core.Hardware;
+import frc.robot.utils.VisionCorrection;
 import org.montclairrobotics.sprocket.SprocketRobot;
 import org.montclairrobotics.sprocket.control.ButtonAction;
 import org.montclairrobotics.sprocket.control.DashboardInput;
@@ -26,17 +30,24 @@ import org.montclairrobotics.sprocket.utils.PID;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.Control.Port;
+import org.opencv.core.Mat;
 
 public class Robot extends SprocketRobot {
     DriveTrain dt;
     GyroCorrection correction;
     GyroLock lock;
     VisionCorrection visionCorrect;
+    CameraServer cameraServer;
+    Mat imageInput;
 
     @Override
     public void robotInit(){
         Hardware.init();
         Control.init();
+        cameraServer = CameraServer.getInstance();
+        CvSink cvSink = cameraServer.getVideo();
+        cvSink.grabFrame(imageInput);
+
         // Drivetrain code
         // Todo: test and implement Gyro Lock
         DriveTrainBuilder dtBuilder = new DriveTrainBuilder();

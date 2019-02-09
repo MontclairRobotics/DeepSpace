@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.HashMap;
 
+import edu.wpi.cscore.CvSink;
 import org.montclairrobotics.sprocket.loop.Priority;
 import org.montclairrobotics.sprocket.loop.Updatable;
 import org.montclairrobotics.sprocket.loop.Updater;
@@ -31,14 +32,14 @@ import javax.xml.transform.Source;
 public class GripPipeline implements Updatable {
 
 	private Rect output;
-	private Mat source;
+	private CvSink source;
 	//Outputs
 	private Mat blurOutput = new Mat();
 	private Mat hsvThresholdOutput = new Mat();
 	private ArrayList<MatOfPoint> findContoursOutput = new ArrayList<MatOfPoint>();
 	private ArrayList<MatOfPoint> filterContoursOutput = new ArrayList<MatOfPoint>();
 
-	public GripPipeline(Mat source){
+	public GripPipeline(CvSink source){
 		this.source = source;
 		Updater.add(this, Priority.HIGH);
 	}
@@ -125,7 +126,9 @@ public class GripPipeline implements Updatable {
 
 	@Override
 	public void update() {
-		output = process(source);
+		Mat output = new Mat();
+		source.grabFrame(output);
+		this.output = process(output);
 	}
 
 
@@ -201,7 +204,6 @@ public class GripPipeline implements Updatable {
 	 * @param hue The min and max hue
 	 * @param sat The min and max saturation
 	 * @param val The min and max value
-	 * @param output The image in which to store the output.
 	 */
 	private void hsvThreshold(Mat input, double[] hue, double[] sat, double[] val,
 	    Mat out) {
@@ -213,9 +215,6 @@ public class GripPipeline implements Updatable {
 	/**
 	 * Sets the values of pixels in a binary image to their distance to the nearest black pixel.
 	 * @param input The image on which to perform the Distance Transform.
-	 * @param type The Transform.
-	 * @param maskSize the size of the mask.
-	 * @param output The image in which to store the output.
 	 */
 	private void findContours(Mat input, boolean externalOnly,
 		List<MatOfPoint> contours) {
@@ -243,7 +242,6 @@ public class GripPipeline implements Updatable {
 	 * @param maxWidth maximum width
 	 * @param minHeight minimum height
 	 * @param maxHeight maximimum height
-	 * @param Solidity the minimum and maximum solidity of a contour
 	 * @param minVertexCount minimum vertex Count of the contours
 	 * @param maxVertexCount maximum vertex Count
 	 * @param minRatio minimum ratio of width to height

@@ -1,10 +1,12 @@
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import org.montclairrobotics.sprocket.control.ArcadeDriveInput;
 import org.montclairrobotics.sprocket.control.Button;
 import org.montclairrobotics.sprocket.control.JoystickButton;
 
 import edu.wpi.first.wpilibj.Joystick;
+import org.opencv.core.Mat;
 
 class Control{
     public class Port{
@@ -28,10 +30,12 @@ class Control{
     public static Button compressor; 
     public static Button solenoid;
 
+
     public static void init(){
         // Drive Sticks
         driveStick = new Joystick(Port.DRIVE_STICK);
         auxStick = new Joystick(Port.AUX_STICK);
+
 
         // Control Inputs
         dt_input = new ArcadeDriveInput(driveStick);
