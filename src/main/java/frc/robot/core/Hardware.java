@@ -32,7 +32,7 @@ import frc.robot.utils.NavXInput;
  */
 public class Hardware {
     
-    public static class DeviceID {
+    private static class DeviceID {
         // Drive Train ID's
         public static final int DRIVE_RIGHT_FRONT = 2; // Forwards
         public static final int DRIVE_RIGHT_BACK = 1;  // Forwards
