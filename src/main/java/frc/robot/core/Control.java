@@ -48,6 +48,8 @@ public class Control{
         public static final int SOLENOID = 7;
 
         public static final int BALL_FIRE = 7;
+        public static final int INTAKE_UP = 1;
+        public static final int INTAKE_DOWN = 3;
 
         public static final int AUTO_HATCH = 4;
 
@@ -66,6 +68,8 @@ public class Control{
     public static Button ballFire;
     public static Button liftUp;
     public static Button liftDown;
+    public static Button intakeUp;
+    public static Button intakeDown;
 
 
     public static Input<Double> DRIVE_RIGHT_X_AXIS;
@@ -81,7 +85,6 @@ public class Control{
     public static void init(){
         driveStick = new Joystick(Port.DRIVE_STICK);
         auxStick = new Joystick(Port.AUX_STICK);
-        driveStick.getPOV();
 
         dt_input = new MecanumInput(driveStick, () -> -driveStick.getRawAxis(2));
 
@@ -90,6 +93,8 @@ public class Control{
         liftUp = new JoystickButton(auxStick, Port.LIFT_UP);
         liftDown = new JoystickButton(auxStick, Port.LIFT_DOWN);
 
+        intakeUp = new JoystickButton(auxStick, Port.INTAKE_UP);
+        intakeDown = new JoystickButton(auxStick, Port.INTAKE_DOWN);
 
         DRIVE_RIGHT_X_AXIS = () -> driveStick.getRawAxis(2);
         DRIVE_RIGHT_Y_AXIS = () -> driveStick.getRawAxis(5);

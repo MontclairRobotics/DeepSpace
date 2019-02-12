@@ -134,13 +134,21 @@ public class Robot extends SprocketRobot {
         ));
 
         // Intake
-        intake = new Intake(Control.AUX_LEFT_Y_AXIS, Control.ballFire, new Module(
-                new SEncoder(Hardware.intake_encoder, 1),
-                new PID(1, 0, 0),
-                Module.MotorInputType.PERCENT,
-                new Motor(Hardware.intake_left),
-                new Motor(Hardware.intake_right)
-        ));
+        intake = new Intake(
+                Control.AUX_LEFT_Y_AXIS,
+                new SplitButton(
+                        Control.intakeUp,
+                        Control.intakeDown
+                ),
+                Control.ballFire, new Module(
+                    new SEncoder(Hardware.intake_encoder, 1),
+                    new PID(1, 0, 0),
+                    Module.MotorInputType.PERCENT,
+                    new Motor(Hardware.intake_left),
+                    new Motor(Hardware.intake_right)
+                ),
+                new Motor(Hardware.intake_rotate)
+        );
 
 
         // BUTTONS
