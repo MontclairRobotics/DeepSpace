@@ -5,8 +5,10 @@ import java.util.ArrayList;
 
 import frc.robot.utils.FieldCentric;
 import frc.robot.utils.PressureRegulator;
+import frc.robot.utils.VisionCorrection;
 import org.montclairrobotics.sprocket.SprocketRobot;
 import org.montclairrobotics.sprocket.control.ButtonAction;
+import org.montclairrobotics.sprocket.control.DashboardInput;
 import org.montclairrobotics.sprocket.control.ToggleButton;
 import org.montclairrobotics.sprocket.drive.*;
 import org.montclairrobotics.sprocket.drive.steps.GyroCorrection;
@@ -53,6 +55,7 @@ public class Robot extends SprocketRobot {
     GyroLock lock;
     FieldCentric fieldCentric;
     Sensitivity sensitivity;
+    VisionCorrection visionCorrection;
 
     Compressor compressor;
     Solenoid solenoid;
@@ -95,6 +98,10 @@ public class Robot extends SprocketRobot {
 
         // Add drive train steps
         ArrayList<Step<DTTarget>> steps = new ArrayList<>();
+        visionCorrection = new VisionCorrection(new DashboardInput("Hatch X"), new PID(1, 0, 0));
+        visionCorrection.setTarget(200); // TODO: Test and tune
+        new ToggleButton(Control.driveStick, Control.Port.AUTO_HATCH, visionCorrection);
+        steps.add(visionCorrection);
         steps.add(correction);
         steps.add(fieldCentric);
         steps.add(sensitivity);
@@ -141,6 +148,6 @@ public class Robot extends SprocketRobot {
     public void update() {
         // Debug information
         Debug.msg("Pressure Switch Valve", compressor.getPressureSwitchValue());
-        Debug.msg("Comrpessor Current", compressor.getCompressorCurrent());
+        Debug.msg("Compressor Current", compressor.getCompressorCurrent());
     }
 }
