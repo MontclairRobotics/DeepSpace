@@ -3,12 +3,11 @@ package frc.robot.core;
 
 import java.util.ArrayList;
 
-import frc.robot.utils.FieldCentric;
-import frc.robot.utils.PressureRegulator;
-import frc.robot.utils.VisionCorrection;
 import org.montclairrobotics.sprocket.SprocketRobot;
-import org.montclairrobotics.sprocket.control.ButtonAction;
 import org.montclairrobotics.sprocket.control.DashboardInput;
+import frc.robot.components.Intake;
+import frc.robot.components.Lift;
+import frc.robot.utils.*;
 import org.montclairrobotics.sprocket.control.ToggleButton;
 import org.montclairrobotics.sprocket.drive.*;
 import org.montclairrobotics.sprocket.drive.steps.GyroCorrection;
@@ -17,7 +16,9 @@ import org.montclairrobotics.sprocket.drive.utils.GyroLock;
 import org.montclairrobotics.sprocket.geometry.Degrees;
 import org.montclairrobotics.sprocket.geometry.Polar;
 import org.montclairrobotics.sprocket.geometry.XY;
+import org.montclairrobotics.sprocket.motors.Module;
 import org.montclairrobotics.sprocket.motors.Motor;
+import org.montclairrobotics.sprocket.motors.SEncoder;
 import org.montclairrobotics.sprocket.pipeline.Step;
 import org.montclairrobotics.sprocket.utils.Debug;
 import org.montclairrobotics.sprocket.utils.PID;
@@ -51,14 +52,20 @@ public class Robot extends SprocketRobot {
 
     DriveTrain driveTrain;
 
+    // Drive Train Steps
     GyroCorrection correction;
     GyroLock lock;
     FieldCentric fieldCentric;
     Sensitivity sensitivity;
     VisionCorrection visionCorrection;
+    Orientation orientation;
+
+    // Mechanisms
+    Lift lift;
+    Intake intake;
 
     Compressor compressor;
-    Solenoid solenoid;
+    SSolenoid solenoid;
 
 
     @Override
@@ -66,7 +73,6 @@ public class Robot extends SprocketRobot {
         // Initialization
         Hardware.init();
         Control.init();
-
 
         // Drivetrain code
         DriveTrainBuilder dtBuilder = new DriveTrainBuilder();
@@ -93,6 +99,7 @@ public class Robot extends SprocketRobot {
         correction = new GyroCorrection(Hardware.gyro, new PID(-0.3, 0, -0.00035), 90, 1);
         fieldCentric = new FieldCentric(correction);
         lock = new GyroLock(correction);
+        orientation = new Orientation(correction);
         sensitivity = new Sensitivity(0.3);
         correction.reset();
 
@@ -104,44 +111,44 @@ public class Robot extends SprocketRobot {
         steps.add(visionCorrection);
         steps.add(correction);
         steps.add(fieldCentric);
+        steps.add(orientation);
         steps.add(sensitivity);
         driveTrain.setPipeline(new DTPipeline(steps));
 
         // Pneumatics
         compressor = new Compressor(0);
-        solenoid = new Solenoid(3);
+        solenoid = new SSolenoid(new Solenoid(3));
         PressureRegulator p = new PressureRegulator(compressor);
         p.enable();
 
 
+        // Lift
+        lift = new Lift(Control.AUX_RIGHT_Y_AXIS, Control.liftUp, Control.liftDown, new Module(
+                new SEncoder(Hardware.lift_encoder, 1), // Todo: Ticks Per inch
+                null,
+                Module.MotorInputType.PERCENT,
+                new LimitedMotor(Hardware.lift_1, new LimitSwitch(0)),
+                new LimitedMotor(Hardware.lift_2, new LimitSwitch(1)),
+                new LimitedMotor(Hardware.lift_3, new LimitSwitch(2))
+        ));
+
+        // Intake
+        intake = new Intake(Control.AUX_LEFT_Y_AXIS, Control.ballFire, new Module(
+                new SEncoder(Hardware.intake_encoder, 1),
+                new PID(1, 0, 0),
+                Module.MotorInputType.PERCENT,
+                new Motor(Hardware.intake_left),
+                new Motor(Hardware.intake_right)
+        ));
+
+
         // BUTTONS
         ToggleButton fieldCentricButton = new ToggleButton(Control.driveStick, Control.Port.FIELD_CENTRIC, fieldCentric);
+        ToggleButton gyroLockButton = new ToggleButton(Control.driveStick, Control.Port.GYRO_LOCK, lock);
+        ToggleButton solenoidButton = new ToggleButton(Control.auxStick, Control.Port.SOLENOID, solenoid);
 
-        Control.solenoid.setPressAction(new ButtonAction(){
-            @Override
-            public void onAction(){
-                solenoid.set(false);
-            }
-        });
-        Control.solenoid.setOffAction(new ButtonAction(){
-            @Override
-            public void onAction(){
-                solenoid.set(true);
-            }
-        });
 
-        Control.gyroLockButton.setPressAction(new ButtonAction(){
-            @Override
-            public void onAction() {
-                lock.enable();
-            }
-        });
-        Control.gyroLockButton.setOffAction(new ButtonAction(){
-            @Override
-            public void onAction(){
-                lock.disable();
-            }
-        });
+
     }
 
     @Override
