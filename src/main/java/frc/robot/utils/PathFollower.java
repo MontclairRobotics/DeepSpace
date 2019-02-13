@@ -46,6 +46,10 @@ public class PathFollower implements DTStep, Togglable {
 
     }
 
+    public boolean isDone(){
+        return segment >= trajectory.segments.length;
+    }
+
     @Override
     public void enable() {
         segment = 0;
