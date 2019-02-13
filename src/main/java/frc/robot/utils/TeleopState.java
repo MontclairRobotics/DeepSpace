@@ -6,7 +6,11 @@ import org.montclairrobotics.sprocket.states.State;
 
 public class TeleopState implements State {
 
-    public SprocketRobot sprocketRobot;
+    private SprocketRobot sprocketRobot;
+
+    public TeleopState(SprocketRobot robot){
+        this.sprocketRobot = robot;
+    }
 
     @Override
     public void start() {
