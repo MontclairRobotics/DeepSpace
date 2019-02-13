@@ -11,7 +11,6 @@ import frc.robot.utils.NavXInput;
  * The hardware class is in charge of storing all hardware
  * devices and configurations that the 2019 DeepSpace robot
  * will use. The configurations are based on the google sheet
- * that can be found Here: <link></link>
  * that can be found Here: <link>https://docs.google.com/spreadsheets/d/1AGDKN64j39yfSKluaY3xmQL363ybChiW1dxFRdN-Dng/edit?usp=sharing</link>
  * The sheet is in place so that both code and electronics are
  * on the same page from the start on what the device configurations
