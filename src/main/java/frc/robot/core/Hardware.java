@@ -12,6 +12,7 @@ import frc.robot.utils.NavXInput;
  * devices and configurations that the 2019 DeepSpace robot
  * will use. The configurations are based on the google sheet
  * that can be found Here: <link></link>
+ * that can be found Here: <link>https://docs.google.com/spreadsheets/d/1AGDKN64j39yfSKluaY3xmQL363ybChiW1dxFRdN-Dng/edit?usp=sharing</link>
  * The sheet is in place so that both code and electronics are
  * on the same page from the start on what the device configurations
  * are.
@@ -34,19 +35,19 @@ public class Hardware {
     
     private static class DeviceID {
         // Drive Train ID's
-        public static final int DRIVE_RIGHT_FRONT = 2; // Forwards
-        public static final int DRIVE_RIGHT_BACK = 1;  // Forwards
-        public static final int DRIVE_LEFT_FRONT = 3;  // Backwards
-        public static final int DRIVE_LEFT_BACK = 0;   // Backwards
+        public static final int DRIVE_RIGHT_FRONT = 1; // Forwards
+        public static final int DRIVE_RIGHT_BACK = 13;  // Forwards
+        public static final int DRIVE_LEFT_FRONT = 0;  // Backwards
+        public static final int DRIVE_LEFT_BACK = 14;   // Backwards
 
         public static final int INTAKE_MOTOR_RIGHT = 4;
         public static final int INTAKE_MOTOR_LEFT = 5;
 
-        public static final int LIFT_MOTOR_1 = 6;
-        public static final int LIFT_MOTOR_2 = 7;
-        public static final int LIFT_MOTOR_3 = 8;
+        public static final int LIFT_MOTOR_1 = 12;
+        public static final int LIFT_MOTOR_2 = 2;
+        public static final int LIFT_MOTOR_3 = 15;
 
-        public static final int INTAKE_MOTOR_ROTATE = 9;
+        public static final int INTAKE_MOTOR_ROTATE = 3;
 
         public static final SPI.Port navxPort = SPI.Port.kMXP;
     }
