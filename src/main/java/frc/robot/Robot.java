@@ -62,13 +62,12 @@ public class Robot extends SprocketRobot {
         } catch (InvalidDriveTrainException e) {
             e.printStackTrace();
         }
-        
         correction = new GyroCorrection(Hardware.gyro, new PID(1.5, 0, 0.0015), 90, 1);
 
         ArrayList<Step<DTTarget>> steps = new ArrayList<>();
         lock = new GyroLock(correction);
-        visionCorrect = new VisionCorrection(new DashboardInput("Hatch"), new PID(1, 0, 0));
-        visionCorrect.setTarget(200); // TODO: Test and tune
+        visionCorrect = new VisionCorrection(new DashboardInput("hacthX"), new PID(.1, 0, 0));
+        visionCorrect.setTarget(215); // TODO: Test and tune
         new ToggleButton(Control.auxStick, Port.AUTO_HATCH, visionCorrect);
         steps.add(visionCorrect);
         steps.add(new Deadzone());
