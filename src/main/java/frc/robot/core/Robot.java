@@ -3,6 +3,7 @@ package frc.robot.core;
 
 import java.util.ArrayList;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import frc.robot.utils.FieldCentric;
 import frc.robot.utils.PressureRegulator;
 import org.montclairrobotics.sprocket.SprocketRobot;
@@ -74,6 +75,7 @@ public class Robot extends SprocketRobot {
         // Initialization
         Hardware.init();
         Control.init();
+        CameraServer.getInstance().startAutomaticCapture();
 
         // Drivetrain code
         DriveTrainBuilder dtBuilder = new DriveTrainBuilder();
@@ -141,8 +143,8 @@ public class Robot extends SprocketRobot {
                         Control.intakeDown
                 ),
                 Control.ballFire, new Module(
-                    new SEncoder(Hardware.intake_encoder, 1),
-                    new PID(1, 0, 0),
+                    null,
+                    null,
                     Module.MotorInputType.PERCENT,
                     new Motor(Hardware.intake_left),
                     new Motor(Hardware.intake_right)

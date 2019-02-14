@@ -64,7 +64,6 @@ public class Hardware {
     public static WPI_TalonSRX intake_left;
     public static WPI_TalonSRX intake_rotate;
 
-    public static Encoder intake_encoder;
     public static Encoder intake_rotate_encoder;
 
     public static WPI_TalonSRX lift_1;
@@ -91,6 +90,12 @@ public class Hardware {
         lift_1        = new WPI_TalonSRX(DeviceID.LIFT_MOTOR_1);
         lift_2        = new WPI_TalonSRX(DeviceID.LIFT_MOTOR_2);
         lift_3        = new WPI_TalonSRX(DeviceID.LIFT_MOTOR_3);
+
+        dt_left_encoder = new Encoder(0, 1);
+        dt_right_encoder = new Encoder(2, 3);
+        intake_rotate_encoder = new Encoder(4, 5);
+        lift_encoder = new Encoder(6, 7);
+
 
         gyro = new NavXInput(DeviceID.navxPort);
     }
