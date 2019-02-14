@@ -32,10 +32,10 @@ public class Hardware {
     
     public static class DeviceID {
         // Drive Train ID's
-        public static final int DRIVE_RIGHT_FRONT = 2; // Forwards
-        public static final int DRIVE_RIGHT_BACK = 1;  // Forwards
-        public static final int DRIVE_LEFT_FRONT = 3;  // Backwards
-        public static final int DRIVE_LEFT_BACK = 0;   // Backwards
+        public static final int DRIVE_RIGHT_FRONT = 1; // Forwards
+        public static final int DRIVE_RIGHT_BACK = 13;  // Forwards
+        public static final int DRIVE_LEFT_FRONT = 0;  // Backwards
+        public static final int DRIVE_LEFT_BACK = 14;   // Backwards
 
         public static final SPI.Port navxPort = SPI.Port.kMXP;
     }
