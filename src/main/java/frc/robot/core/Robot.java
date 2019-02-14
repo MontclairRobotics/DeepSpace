@@ -7,6 +7,7 @@ import edu.wpi.first.cameraserver.CameraServer;
 import frc.robot.utils.FieldCentric;
 import frc.robot.utils.PressureRegulator;
 import org.montclairrobotics.sprocket.SprocketRobot;
+import org.montclairrobotics.sprocket.auto.AutoMode;
 import org.montclairrobotics.sprocket.control.DashboardInput;
 import frc.robot.components.Intake;
 import frc.robot.components.Lift;
@@ -23,6 +24,7 @@ import org.montclairrobotics.sprocket.motors.Module;
 import org.montclairrobotics.sprocket.motors.Motor;
 import org.montclairrobotics.sprocket.motors.SEncoder;
 import org.montclairrobotics.sprocket.pipeline.Step;
+import org.montclairrobotics.sprocket.utils.CameraServers;
 import org.montclairrobotics.sprocket.utils.Debug;
 import org.montclairrobotics.sprocket.utils.PID;
 
@@ -112,6 +114,7 @@ public class Robot extends SprocketRobot {
         visionCorrection.setTarget(200); // TODO: Test and tune
         new ToggleButton(Control.driveStick, Control.Port.AUTO_HATCH, visionCorrection);
         steps.add(visionCorrection);
+        steps.add(new VisionCorrection(new VisionTarget(CameraServer.getInstance().getVideo()), new PID(.1, 0, 0)));
         steps.add(correction);
         steps.add(fieldCentric);
         steps.add(orientation);
@@ -157,6 +160,8 @@ public class Robot extends SprocketRobot {
         ToggleButton fieldCentricButton = new ToggleButton(Control.driveStick, Control.Port.FIELD_CENTRIC, fieldCentric);
         ToggleButton gyroLockButton = new ToggleButton(Control.driveStick, Control.Port.GYRO_LOCK, lock);
         ToggleButton solenoidButton = new ToggleButton(Control.auxStick, Control.Port.SOLENOID, solenoid);
+
+        addAutoMode(new AutoMode("Path test", new PathState("Test"), new TeleopState(this)));
 
     }
 
