@@ -68,6 +68,9 @@ public class VisionCorrection implements DTStep, Togglable {
                 dtTarget.getTurn().add(new Degrees(correction.get()))
             );
         }
+        Debug.msg("Vision Target Current", visionIn.get());
+        Debug.msg("Vision Target", target);
+        Debug.msg("Correction", correction.get());
         debug();
         return dtTarget;
     }
