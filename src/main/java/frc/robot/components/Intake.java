@@ -2,7 +2,9 @@ package frc.robot.components;
 
 import frc.robot.utils.SplitButton;
 import org.montclairrobotics.sprocket.control.Button;
+import org.montclairrobotics.sprocket.loop.Priority;
 import org.montclairrobotics.sprocket.loop.Updatable;
+import org.montclairrobotics.sprocket.loop.Updater;
 import org.montclairrobotics.sprocket.motors.Module;
 import org.montclairrobotics.sprocket.motors.Motor;
 import org.montclairrobotics.sprocket.utils.Input;
@@ -21,6 +23,8 @@ public class Intake implements Updatable {
         this.launch = launch;
         this.motorModule = motorModule;
         this.rotateMotor = rotateMotor;
+        this.rotate = rotate;
+        Updater.add(this, Priority.HIGH);
 
     }
 
@@ -32,7 +36,7 @@ public class Intake implements Updatable {
     public void update() {
         double motorPower = .05;
         if(!auto) {
-            if (powerInput.get() > .05) {
+            if (Math.abs(powerInput.get()) > .05) {
                 motorPower = powerInput.get();
             }
             if (launch.get()) {

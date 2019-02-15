@@ -77,7 +77,7 @@ public class Robot extends SprocketRobot {
         // Initialization
         Hardware.init();
         Control.init();
-        CameraServer.getInstance().startAutomaticCapture();
+        // CameraServer.getInstance().startAutomaticCapture();
 
         // Drivetrain code
         DriveTrainBuilder dtBuilder = new DriveTrainBuilder();
@@ -113,8 +113,8 @@ public class Robot extends SprocketRobot {
         visionCorrection = new VisionCorrection(new DashboardInput("Hatch X"), new PID(1, 0, 0));
         visionCorrection.setTarget(200); // TODO: Test and tune
         new ToggleButton(Control.driveStick, Control.Port.AUTO_HATCH, visionCorrection);
-        steps.add(visionCorrection);
-        steps.add(new VisionCorrection(new VisionTarget(CameraServer.getInstance().getVideo()), new PID(.1, 0, 0)));
+        // steps.add(visionCorrection);
+        // steps.add(new VisionCorrection(new VisionTarget(CameraServer.getInstance().getVideo()), new PID(.1, 0, 0)));
         steps.add(correction);
         steps.add(fieldCentric);
         steps.add(orientation);
@@ -122,8 +122,8 @@ public class Robot extends SprocketRobot {
         driveTrain.setPipeline(new DTPipeline(steps));
 
         // Pneumatics
-        compressor = new Compressor(0);
-        solenoid = new SSolenoid(new Solenoid(3));
+        compressor = new Compressor(20);
+        solenoid = new SSolenoid(new Solenoid(20, 3));
         PressureRegulator p = new PressureRegulator(compressor);
         p.enable();
 
@@ -133,9 +133,9 @@ public class Robot extends SprocketRobot {
                 new SEncoder(Hardware.lift_encoder, 1), // Todo: Ticks Per inch
                 null,
                 Module.MotorInputType.PERCENT,
-                new LimitedMotor(Hardware.lift_1, new LimitSwitch(0)),
-                new LimitedMotor(Hardware.lift_2, new LimitSwitch(1)),
-                new LimitedMotor(Hardware.lift_3, new LimitSwitch(2))
+                new Motor(Hardware.lift_1),
+                new Motor(Hardware.lift_2),
+                new Motor(Hardware.lift_3)
         ));
 
         // Intake
@@ -161,7 +161,7 @@ public class Robot extends SprocketRobot {
         ToggleButton gyroLockButton = new ToggleButton(Control.driveStick, Control.Port.GYRO_LOCK, lock);
         ToggleButton solenoidButton = new ToggleButton(Control.auxStick, Control.Port.SOLENOID, solenoid);
 
-        addAutoMode(new AutoMode("Path test", new PathState("Test"), new TeleopState(this)));
+        // addAutoMode(new AutoMode("Path test", new PathState("Test"), new TeleopState(this)));
 
     }
 

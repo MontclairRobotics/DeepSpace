@@ -1,6 +1,7 @@
 package frc.robot.core;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.VictorSP;
@@ -52,16 +53,16 @@ public class Hardware {
     }
 
 
-    public static SP dt_rightFront;
-    public static SP dt_rightBack;
-    public static SP dt_leftFront;
-    public static SP dt_leftBack;
+    public static WPI_TalonSRX dt_rightFront;
+    public static WPI_TalonSRX dt_rightBack;
+    public static WPI_TalonSRX dt_leftFront;
+    public static WPI_TalonSRX dt_leftBack;
 
     public static Encoder dt_right_encoder;
     public static Encoder dt_left_encoder;
 
     public static WPI_TalonSRX intake_right;
-    public static WPI_TalonSRX intake_left;
+    public static WPI_VictorSPX intake_left;
     public static WPI_TalonSRX intake_rotate;
 
     public static Encoder intake_rotate_encoder;
@@ -78,13 +79,13 @@ public class Hardware {
     public static void init(){
         System.out.println("Initializing Hardware");
 
-        dt_rightFront = new SP(new VictorSP(DeviceID.DRIVE_RIGHT_FRONT));
-        dt_rightBack =  new SP(new VictorSP(DeviceID.DRIVE_RIGHT_BACK));
-        dt_leftFront =  new SP(new VictorSP(DeviceID.DRIVE_LEFT_FRONT));
-        dt_leftBack =   new SP(new VictorSP(DeviceID.DRIVE_LEFT_BACK));
+        dt_rightFront = new WPI_TalonSRX(DeviceID.DRIVE_RIGHT_FRONT);
+        dt_rightBack =  new WPI_TalonSRX(DeviceID.DRIVE_RIGHT_BACK);
+        dt_leftFront =  new WPI_TalonSRX(DeviceID.DRIVE_LEFT_FRONT);
+        dt_leftBack =   new WPI_TalonSRX(DeviceID.DRIVE_LEFT_BACK);
 
         intake_right  = new WPI_TalonSRX(DeviceID.INTAKE_MOTOR_RIGHT);
-        intake_left   = new WPI_TalonSRX(DeviceID.INTAKE_MOTOR_LEFT);
+        intake_left   = new WPI_VictorSPX(DeviceID.INTAKE_MOTOR_LEFT);
         intake_rotate = new WPI_TalonSRX(DeviceID.INTAKE_MOTOR_ROTATE);
 
         lift_1        = new WPI_TalonSRX(DeviceID.LIFT_MOTOR_1);

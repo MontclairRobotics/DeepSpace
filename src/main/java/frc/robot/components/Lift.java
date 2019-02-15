@@ -3,16 +3,18 @@ package frc.robot.components;
 import frc.robot.utils.BangBang;
 import org.montclairrobotics.sprocket.control.Button;
 import org.montclairrobotics.sprocket.control.ButtonAction;
+import org.montclairrobotics.sprocket.loop.Priority;
 import org.montclairrobotics.sprocket.loop.Updatable;
+import org.montclairrobotics.sprocket.loop.Updater;
 import org.montclairrobotics.sprocket.motors.Module;
 import org.montclairrobotics.sprocket.utils.Input;
 
 public class Lift implements Updatable {
-    private int[] positions = {}; // Todo: test for values
+    private int[] positions = {0}; // Todo: test for values
     private Input<Double> override;
     private Button up;
     private Button down;
-    private int pos;
+    private int pos = 0;
     public boolean manual;
     private BangBang correction = new BangBang(50, 1);
     private Module module;
@@ -33,8 +35,9 @@ public class Lift implements Updatable {
                 decrement();
             }
         });
-        this.module = module;
+        this.module = m;
         correction.setInput(m.getEnc());
+        Updater.add(this, Priority.HIGH);
     }
 
     public void increment(){
@@ -60,6 +63,7 @@ public class Lift implements Updatable {
 
     @Override
     public void update() {
+        manual = true;
         if(!manual){
             if(override.get() > 0.01){
                 manual = false;

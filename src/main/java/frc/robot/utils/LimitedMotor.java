@@ -6,19 +6,23 @@ import org.montclairrobotics.sprocket.utils.Input;
 
 public class LimitedMotor extends Motor {
 
-    private Input<Boolean> limit;
+    private Input<Boolean> bottomLimit;
+    private Input<Boolean> topLimit;
 
-    public LimitedMotor(SpeedController motor, Input<Boolean> limit) {
+    public LimitedMotor(SpeedController motor, Input<Boolean> bottomLimit, Input<Boolean> topLimit) {
         super(motor);
-        this.limit = limit;
+        this.bottomLimit = bottomLimit;
+        this.topLimit = topLimit;
     }
 
     @Override
     public void set(double power) {
-        if(!limit.get()) {
-            super.set(power);
-        }else{
+        if(power < 0 && bottomLimit.get()){
             super.set(0);
+        }else if(power > 0 && topLimit.get()){
+            super.set(0);
+        }else{
+            super.set(power);
         }
     }
 }
