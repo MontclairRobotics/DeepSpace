@@ -62,7 +62,7 @@ public class Robot extends SprocketRobot {
     GyroLock lock;
     FieldCentric fieldCentric;
     Sensitivity sensitivity;
-    VisionCorrection visionCorrection;
+    VisionCorrection hatchIntakeCorrection;
     Orientation orientation;
 
     // Mechanisms
@@ -113,10 +113,12 @@ public class Robot extends SprocketRobot {
 
         // Add drive train steps
         ArrayList<Step<DTTarget>> steps = new ArrayList<>();
-        visionCorrection = new VisionCorrection(new DashboardInput("Hatch X"), new PID(1, 0, 0));
-        visionCorrection.setTarget(200); // TODO: Test and tune
-        new ToggleButton(Control.driveStick, Control.Port.AUTO_HATCH, visionCorrection);
-        // steps.add(visionCorrection);
+        hatchIntakeCorrection = new VisionCorrection(new DashboardInput("Hatch X"), new PID(1, 0, 0));
+        hatchIntakeCorrection.setTarget(200); // TODO: Test and tune
+        new ToggleButton(Control.Port.AUTO_HATCH.getStick(),
+                Control.Port.AUTO_HATCH.getButton(),
+                hatchIntakeCorrection);
+         steps.add(hatchIntakeCorrection);
         // steps.add(new VisionCorrection(new VisionTarget(CameraServer.getInstance().getVideo()), new PID(.1, 0, 0)));
         steps.add(correction);
         steps.add(fieldCentric);
@@ -161,9 +163,17 @@ public class Robot extends SprocketRobot {
 
 
         // BUTTONS
-        ToggleButton fieldCentricButton = new ToggleButton(Control.driveStick, Control.Port.FIELD_CENTRIC, fieldCentric);
-        ToggleButton gyroLockButton = new ToggleButton(Control.driveStick, Control.Port.GYRO_LOCK, lock);
-        ToggleButton solenoidButton = new ToggleButton(Control.auxStick, Control.Port.SOLENOID, solenoid);
+        ToggleButton fieldCentricButton = new ToggleButton(Control.Port.FIELD_CENTRIC.getStick(),
+                Control.Port.FIELD_CENTRIC.getButton(),
+                fieldCentric);
+
+        ToggleButton gyroLockButton = new ToggleButton(Control.Port.GYRO_LOCK.getStick(),
+                Control.Port.GYRO_LOCK.getButton(),
+                lock);
+
+        ToggleButton solenoidButton = new ToggleButton(Control.Port.SOLENOID.getStick(),
+                Control.Port.SOLENOID.getButton(),
+                solenoid);
 
         // addAutoMode(new AutoMode("Path test", new PathState("Test"), new TeleopState(this)));
 

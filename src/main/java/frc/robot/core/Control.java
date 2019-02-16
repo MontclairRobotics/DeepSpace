@@ -38,33 +38,40 @@ import org.montclairrobotics.sprocket.utils.Input;
 
  */
 public class Control{
-    public class Port{
-        public static final int DRIVE_STICK = 0;
-        public static final int AUX_STICK = 1;
 
-        public static final int GYRO_LOCK = 12;
-        public static final int FIELD_CENTRIC = 6;
+    public enum Port{
 
-        public static final int SOLENOID = 7;
+        GYRO_LOCK(0,12), // Joystick: 0, Button: 12
+        FIELD_CENTRIC(0,6), // Joystick: 0, Button: 6
+        SOLENOID(0,7), // Joystick: 0, Button: 7
+        BALL_FIRE(1,7), // Joystick: 1, Button: 7
+        INTAKE_UP(1,1), // Joystick: 1, Button: 1
+        INTAKE_DOWN(1,3), // Joystick: 1, Button: 3
+        AUTO_HATCH(0,4), // Joystick: 0, Button: 4
+        LIFT_DOWN(1,1), // Joystick: 1, Button: 1
+        LIFT_UP(1,4); // Joystick: 1, Button: 4
 
-        public static final int BALL_FIRE = 7;
-        public static final int INTAKE_UP = 1;
-        public static final int INTAKE_DOWN = 3;
+        private int stick, button;
 
-        public static final int AUTO_HATCH = 4;
+        Port(int stick, int button){
+            this.stick = stick;
+            this.button = button;
+        }
 
-        public static final int LIFT_DOWN = 1;
-        public static final int LIFT_UP = 4;
+        public int getStick() {
+            return stick;
+        }
 
+        public int getButton() {
+            return button;
+        }
     }
 
     public static Joystick driveStick;
     public static Joystick auxStick;
 
-
     public static MecanumInput dt_input;
 
-    public static Button solenoid;
     public static Button ballFire;
     public static Button liftUp;
     public static Button liftDown;
@@ -83,18 +90,17 @@ public class Control{
     public static Input<Double> AUX_LEFT_Y_AXIS;
 
     public static void init(){
-        driveStick = new Joystick(Port.DRIVE_STICK);
-        auxStick = new Joystick(Port.AUX_STICK);
+        driveStick = new Joystick(0);
+        auxStick = new Joystick(1);
 
         dt_input = new MecanumInput(driveStick, () -> -driveStick.getRawAxis(2));
 
-        solenoid = new JoystickButton(driveStick, Port.SOLENOID);
-        ballFire = new JoystickButton(auxStick, Port.BALL_FIRE);
-        liftUp = new JoystickButton(auxStick, Port.LIFT_UP);
-        liftDown = new JoystickButton(auxStick, Port.LIFT_DOWN);
+        ballFire = new JoystickButton(Port.BALL_FIRE.getStick(), Port.BALL_FIRE.getButton());
+        liftUp = new JoystickButton(Port.LIFT_UP.getStick(), Port.LIFT_UP.getButton());
+        liftDown = new JoystickButton(Port.LIFT_DOWN.getStick(), Port.LIFT_DOWN.getButton());
 
-        intakeUp = new JoystickButton(auxStick, Port.INTAKE_UP);
-        intakeDown = new JoystickButton(auxStick, Port.INTAKE_DOWN);
+        intakeUp = new JoystickButton(Port.INTAKE_UP.getStick(), Port.INTAKE_UP.getButton());
+        intakeDown = new JoystickButton(Port.INTAKE_DOWN.getStick(), Port.INTAKE_DOWN.getButton());
 
         DRIVE_RIGHT_X_AXIS = () -> driveStick.getRawAxis(2);
         DRIVE_RIGHT_Y_AXIS = () -> driveStick.getRawAxis(5);
