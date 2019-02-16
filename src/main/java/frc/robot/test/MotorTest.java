@@ -15,7 +15,7 @@ public class MotorTest extends SprocketRobot {
         Control.init();
         Hardware.init();
         ControlledMotor m1 = new ControlledMotor(new WPI_TalonSRX(12), (Input<Double>) () -> Control.auxStick.getRawAxis(1));
-        ControlledMotor m2 = new ControlledMotor(new WPI_TalonSRX(2), (Input<Double>) () -> -Control.auxStick.getRawAxis(1));
+        ControlledMotor m2 = new ControlledMotor(new WPI_TalonSRX(2), (Input<Double>) () -> Control.auxStick.getRawAxis(1));
     }
 
 }

@@ -10,6 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.core.Robot;
 import frc.robot.test.MotorTest;
+import frc.robot.test.VisionTest;
 
 /**
  * Do NOT add any static variables to this class, or any initialization at all.

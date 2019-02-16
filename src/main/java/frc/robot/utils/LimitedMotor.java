@@ -17,9 +17,9 @@ public class LimitedMotor extends Motor {
 
     @Override
     public void set(double power) {
-        if(power < 0 && bottomLimit.get()){
+        if(power > 0 && bottomLimit.get()){
             super.set(0);
-        }else if(power > 0 && topLimit.get()){
+        }else if(power < 0 && topLimit.get()){
             super.set(0);
         }else{
             super.set(power);

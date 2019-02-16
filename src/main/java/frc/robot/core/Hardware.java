@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.VictorSP;
 import frc.robot.utils.SP;
 import frc.robot.utils.NavXInput;
+import frc.robot.utils.TalonEncoder;
+import org.montclairrobotics.sprocket.motors.SEncoder;
 
 /**
  * The hardware class is in charge of storing all hardware
@@ -71,7 +73,8 @@ public class Hardware {
     public static WPI_TalonSRX lift_2;
     public static WPI_TalonSRX lift_3;
 
-    public static Encoder lift_encoder;
+    public static SEncoder lift_encoder;
+    public static SEncoder second_lift_encoder;
 
 
     public static NavXInput gyro;
@@ -90,12 +93,16 @@ public class Hardware {
 
         lift_1        = new WPI_TalonSRX(DeviceID.LIFT_MOTOR_1);
         lift_2        = new WPI_TalonSRX(DeviceID.LIFT_MOTOR_2);
+        lift_2.setInverted(true);
         lift_3        = new WPI_TalonSRX(DeviceID.LIFT_MOTOR_3);
+        // lift_3.setInverted(true);
 
         dt_left_encoder = new Encoder(0, 1);
         dt_right_encoder = new Encoder(2, 3);
         intake_rotate_encoder = new Encoder(4, 5);
-        lift_encoder = new Encoder(6, 7);
+
+        lift_encoder = new TalonEncoder(lift_2, 1);
+        second_lift_encoder = new TalonEncoder(lift_3, 1);
 
 
         gyro = new NavXInput(DeviceID.navxPort);

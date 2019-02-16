@@ -64,15 +64,15 @@ public class Lift implements Updatable {
     @Override
     public void update() {
         manual = true;
-        if(!manual){
-            if(override.get() > 0.01){
-                manual = false;
-            }else{
-                module.set(correction.get());
-            }
-        }else{
+//        if(!manual){
+//            if(Math.abs(override.get()) > 0.01){
+//                manual = true;
+//            }else{
+//                module.set(correction.get());
+//            }
+//        }else{
             module.set(override.get());
-        }
+//        }
     }
     private void calcClosestState(){
         int min = 0;

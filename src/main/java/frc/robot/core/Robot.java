@@ -72,6 +72,9 @@ public class Robot extends SprocketRobot {
     Compressor compressor;
     SSolenoid solenoid;
 
+    LimitSwitch mainLimit;
+    LimitSwitch secondLimit;
+
     @Override
     public void robotInit(){
         // Initialization
@@ -127,15 +130,16 @@ public class Robot extends SprocketRobot {
         PressureRegulator p = new PressureRegulator(compressor);
         p.enable();
 
-
+        mainLimit = new LimitSwitch(9, true);
+        secondLimit = new LimitSwitch(8, true);
         // Lift
         lift = new Lift(Control.AUX_RIGHT_Y_AXIS, Control.liftUp, Control.liftDown, new Module(
-                new SEncoder(Hardware.lift_encoder, 1), // Todo: Ticks Per inch
-                null,
+                Hardware.lift_encoder, // Todo: Ticks Per inch
+                new PID(.5, .001, .01),
                 Module.MotorInputType.PERCENT,
-                new Motor(Hardware.lift_1),
-                new Motor(Hardware.lift_2),
-                new Motor(Hardware.lift_3)
+                new LimitedMotor(Hardware.lift_1, mainLimit, () -> Hardware.lift_encoder.getTicks() > 10000000),
+                new LimitedMotor(Hardware.lift_2, mainLimit, () -> Hardware.lift_encoder.getTicks() > 10000000),
+                new LimitedMotor(Hardware.lift_3, secondLimit, () -> Hardware.second_lift_encoder.getTicks() >  330000.0)
         ));
 
         // Intake
@@ -170,5 +174,16 @@ public class Robot extends SprocketRobot {
         // Debug information
         Debug.msg("Pressure Switch Valve", compressor.getPressureSwitchValue());
         Debug.msg("Compressor Current", compressor.getCompressorCurrent());
+
+        mainLimit.get();
+        secondLimit.get();
+        Debug.msg("second lift encoder", Hardware.second_lift_encoder.getTicks());
+        Debug.msg("Lift Encoder", Hardware.lift_encoder.getTicks());
+        if(secondLimit.get()){
+            Hardware.second_lift_encoder.reset();
+        }
+        if(mainLimit.get()){
+            Hardware.lift_encoder.reset();
+        }
     }
 }
