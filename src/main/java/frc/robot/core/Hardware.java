@@ -34,26 +34,30 @@ import org.montclairrobotics.sprocket.motors.SEncoder;
  *
  */
 public class Hardware {
-    
-    private static class DeviceID {
-        // Drive Train ID's
-        public static final int DRIVE_RIGHT_FRONT = 1; // Forwards
-        public static final int DRIVE_RIGHT_BACK = 13;  // Forwards
-        public static final int DRIVE_LEFT_FRONT = 0;  // Backwards
-        public static final int DRIVE_LEFT_BACK = 14;   // Backwards
+    private enum DeviceID{
+        DRIVE_RIGHT_FRONT(1),// Forwards
+        DRIVE_RIGHT_BACK(13), // Forwards
+        DRIVE_LEFT_FRONT(0), // Backwards
+        DRIVE_LEFT_BACK(14), // Backwards
 
-        public static final int INTAKE_MOTOR_RIGHT = 4;
-        public static final int INTAKE_MOTOR_LEFT = 5;
+        INTAKE_MOTOR_RIGHT(4),
+        INTAKE_MOTOR_LEFT(5),
 
-        public static final int LIFT_MOTOR_1 = 12;
-        public static final int LIFT_MOTOR_2 = 2;
-        public static final int LIFT_MOTOR_3 = 15;
+        LIFT_MOTOR_1(12),
+        LIFT_MOTOR_2(2),
+        LIFT_MOTOR_3(15),
 
-        public static final int INTAKE_MOTOR_ROTATE = 3;
+        INTAKE_MOTOR_ROTATE(3);
 
-        public static final SPI.Port navxPort = SPI.Port.kMXP;
+        private int deviceID;
+        DeviceID(int deviceID){
+            this.deviceID = deviceID;
+        }
+
+        public int getDeviceID() {
+            return deviceID;
+        }
     }
-
 
     public static WPI_TalonSRX dt_rightFront;
     public static WPI_TalonSRX dt_rightBack;
@@ -82,19 +86,19 @@ public class Hardware {
     public static void init(){
         System.out.println("Initializing Hardware");
 
-        dt_rightFront = new WPI_TalonSRX(DeviceID.DRIVE_RIGHT_FRONT);
-        dt_rightBack =  new WPI_TalonSRX(DeviceID.DRIVE_RIGHT_BACK);
-        dt_leftFront =  new WPI_TalonSRX(DeviceID.DRIVE_LEFT_FRONT);
-        dt_leftBack =   new WPI_TalonSRX(DeviceID.DRIVE_LEFT_BACK);
+        dt_rightFront = new WPI_TalonSRX(DeviceID.DRIVE_RIGHT_FRONT.getDeviceID());
+        dt_rightBack =  new WPI_TalonSRX(DeviceID.DRIVE_RIGHT_BACK.getDeviceID());
+        dt_leftFront =  new WPI_TalonSRX(DeviceID.DRIVE_LEFT_FRONT.getDeviceID());
+        dt_leftBack =   new WPI_TalonSRX(DeviceID.DRIVE_LEFT_BACK.getDeviceID());
 
-        intake_right  = new WPI_TalonSRX(DeviceID.INTAKE_MOTOR_RIGHT);
-        intake_left   = new WPI_VictorSPX(DeviceID.INTAKE_MOTOR_LEFT);
-        intake_rotate = new WPI_TalonSRX(DeviceID.INTAKE_MOTOR_ROTATE);
+        intake_right  = new WPI_TalonSRX(DeviceID.INTAKE_MOTOR_RIGHT.getDeviceID());
+        intake_left   = new WPI_VictorSPX(DeviceID.INTAKE_MOTOR_LEFT.getDeviceID());
+        intake_rotate = new WPI_TalonSRX(DeviceID.INTAKE_MOTOR_ROTATE.getDeviceID());
 
-        lift_1        = new WPI_TalonSRX(DeviceID.LIFT_MOTOR_1);
-        lift_2        = new WPI_TalonSRX(DeviceID.LIFT_MOTOR_2);
+        lift_1        = new WPI_TalonSRX(DeviceID.LIFT_MOTOR_1.getDeviceID());
+        lift_2        = new WPI_TalonSRX(DeviceID.LIFT_MOTOR_2.getDeviceID());
         lift_2.setInverted(true);
-        lift_3        = new WPI_TalonSRX(DeviceID.LIFT_MOTOR_3);
+        lift_3        = new WPI_TalonSRX(DeviceID.LIFT_MOTOR_3.getDeviceID());
         // lift_3.setInverted(true);
 
         dt_left_encoder = new Encoder(0, 1);
@@ -105,7 +109,7 @@ public class Hardware {
         second_lift_encoder = new TalonEncoder(lift_3, 1);
 
 
-        gyro = new NavXInput(DeviceID.navxPort);
+        gyro = new NavXInput(SPI.Port.kMXP);
     }
 
 }
