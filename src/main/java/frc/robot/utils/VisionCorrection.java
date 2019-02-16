@@ -1,7 +1,6 @@
 package frc.robot.utils;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.montclairrobotics.sprocket.control.DashboardInput;
 import org.montclairrobotics.sprocket.drive.DTStep;
 import org.montclairrobotics.sprocket.drive.DTTarget;
 import org.montclairrobotics.sprocket.geometry.Degrees;
@@ -18,20 +17,20 @@ import org.montclairrobotics.sprocket.utils.Togglable;
  * at a specified coordinate.
  * 
  * This is also a toggleable so it should be attached to a button to allow
- * it to be enabled and dissabled 
+ * it to be enabled and disabled
  */
 public class VisionCorrection implements DTStep, Togglable {
     /** Whether or not the correction is active */
     private boolean enabled;
 
     /** The PID controller used to correct to the specified target */
-    private PID correction; 
+    private PID correction;
     /** An input (usually from the network tables) */
     private Input<Double> visionIn;
 
     private double target; 
 
-    /** 
+    /**
      * Create a new Vision correction specifying the target
      */
     public VisionCorrection(Input<Double> visionIn, PID correction, double target){

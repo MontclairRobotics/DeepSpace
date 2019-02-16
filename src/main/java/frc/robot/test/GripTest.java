@@ -6,7 +6,7 @@ import frc.robot.utils.VisionTarget;
 import org.montclairrobotics.sprocket.SprocketRobot;
 import org.montclairrobotics.sprocket.utils.Debug;
 
-public class VisionTest extends SprocketRobot {
+public class GripTest extends SprocketRobot {
     NewVisionTarget test;
     @Override
     public void robotInit() {
