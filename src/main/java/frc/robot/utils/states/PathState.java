@@ -1,15 +1,12 @@
-package frc.robot.utils;
+package frc.robot.utils.states;
 
+import frc.robot.utils.PathFollower;
 import jaci.pathfinder.PathfinderFRC;
-import jaci.pathfinder.Trajectory;
 import org.montclairrobotics.sprocket.auto.AutoState;
 import org.montclairrobotics.sprocket.drive.DTTarget;
-import org.montclairrobotics.sprocket.drive.ZeroDTInput;
 import org.montclairrobotics.sprocket.drive.steps.GyroCorrection;
 import org.montclairrobotics.sprocket.geometry.Angle;
-import org.montclairrobotics.sprocket.geometry.Degrees;
 import org.montclairrobotics.sprocket.geometry.Vector;
-import org.montclairrobotics.sprocket.geometry.XY;
 
 public class PathState extends AutoState {
 

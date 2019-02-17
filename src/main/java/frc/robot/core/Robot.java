@@ -3,11 +3,10 @@ package frc.robot.core;
 
 import java.util.ArrayList;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import frc.robot.utils.FieldCentric;
 import frc.robot.utils.PressureRegulator;
+import frc.robot.utils.vision.VisionCorrection;
 import org.montclairrobotics.sprocket.SprocketRobot;
-import org.montclairrobotics.sprocket.auto.AutoMode;
 import org.montclairrobotics.sprocket.control.DashboardInput;
 import frc.robot.components.Intake;
 import frc.robot.components.Lift;
@@ -22,9 +21,7 @@ import org.montclairrobotics.sprocket.geometry.Polar;
 import org.montclairrobotics.sprocket.geometry.XY;
 import org.montclairrobotics.sprocket.motors.Module;
 import org.montclairrobotics.sprocket.motors.Motor;
-import org.montclairrobotics.sprocket.motors.SEncoder;
 import org.montclairrobotics.sprocket.pipeline.Step;
-import org.montclairrobotics.sprocket.utils.CameraServers;
 import org.montclairrobotics.sprocket.utils.Debug;
 import org.montclairrobotics.sprocket.utils.PID;
 

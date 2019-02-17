@@ -60,6 +60,9 @@ public class Lift implements Updatable {
         }
     }
 
+    public void setPos(int pos){
+
+    }
 
     @Override
     public void update() {

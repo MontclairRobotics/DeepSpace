@@ -1,4 +1,4 @@
-package frc.robot.utils;
+package frc.robot.utils.states;
 
 import org.montclairrobotics.sprocket.SprocketRobot;
 import org.montclairrobotics.sprocket.states.State;

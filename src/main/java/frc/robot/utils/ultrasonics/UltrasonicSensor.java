@@ -1,4 +1,4 @@
-package frc.robot.utils;
+package frc.robot.utils.ultrasonics;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Ultrasonic;

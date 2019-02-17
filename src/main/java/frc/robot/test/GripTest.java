@@ -2,7 +2,6 @@ package frc.robot.test;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import frc.robot.utils.NewVisionTarget;
-import frc.robot.utils.VisionTarget;
 import org.montclairrobotics.sprocket.SprocketRobot;
 import org.montclairrobotics.sprocket.utils.Debug;
 

@@ -1,4 +1,4 @@
-package frc.robot.utils;
+package frc.robot.utils.vision;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.montclairrobotics.sprocket.drive.DTStep;

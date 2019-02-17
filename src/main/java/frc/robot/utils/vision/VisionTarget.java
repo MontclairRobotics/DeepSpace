@@ -1,4 +1,4 @@
-package frc.robot.utils;
+package frc.robot.utils.vision;
 import java.util.ArrayList;
 import java.util.List;
 import edu.wpi.cscore.CvSink;
