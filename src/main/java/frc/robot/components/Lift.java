@@ -1,89 +1,75 @@
 package frc.robot.components;
 
-import frc.robot.utils.BangBang;
 import org.montclairrobotics.sprocket.control.Button;
 import org.montclairrobotics.sprocket.control.ButtonAction;
 import org.montclairrobotics.sprocket.loop.Priority;
 import org.montclairrobotics.sprocket.loop.Updatable;
 import org.montclairrobotics.sprocket.loop.Updater;
 import org.montclairrobotics.sprocket.motors.Module;
-import org.montclairrobotics.sprocket.utils.Input;
+import org.montclairrobotics.sprocket.utils.Debug;
+import org.montclairrobotics.sprocket.utils.DoubleInput;
+import org.montclairrobotics.sprocket.utils.PID;
 
 public class Lift implements Updatable {
-    private int[] positions = {0}; // Todo: test for values
-    private Input<Double> override;
-    private Button up;
-    private Button down;
-    private int pos = 0;
-    public boolean manual;
-    private BangBang correction = new BangBang(50, 1);
-    private Module module;
 
-    public Lift(Input<Double> override, Button up, Button down, Module m){
-        this.override = override;
-        this.up = up;
-        this.down = down;
-        this.up.setPressAction(new ButtonAction() {
-            @Override
-            public void onAction() {
-                increment();
-            }
-        });
-        this.down.setPressAction(new ButtonAction() {
-            @Override
-            public void onAction() {
-                decrement();
-            }
-        });
+    public enum  Heights{
+        TOP(0), MID(0), BOT(0); // Test for values
+
+        private double pos;
+        Heights(double pos){
+            this.pos = pos;
+        }
+    }
+
+    private Module module;
+    private Button top, mid, bot, reset;
+
+    private PID correction = new PID(1,0,0)
+            .setInput(new DoubleInput(module.getEnc().get()));
+
+    public Lift(Module m, Button top, Button mid, Button bot, Button reset){
         this.module = m;
         correction.setInput(m.getEnc());
         Updater.add(this, Priority.HIGH);
-    }
+        this.top = top;
+        this.mid = mid;
+        this.bot = bot;
+        this.reset = reset;
 
-    public void increment(){
-        if(manual){
-            calcClosestState();
-            manual = false;
-        }
-        if(pos + 1 < positions.length){
-            pos++;
-        }
-    }
+        this.top.setHeldAction(new ButtonAction() {
+            @Override
+            public void onAction() {
+                correction.setTarget(Heights.TOP.pos);
+            }
+        });
 
-    public void decrement(){
-        if(manual){
-            calcClosestState();
-            manual = false;
-        }
-        if(pos - 1 > 0){
-            pos--;
-        }
-    }
+        this.mid.setHeldAction(new ButtonAction() {
+            @Override
+            public void onAction() {
+                correction.setTarget(Heights.MID.pos);
+            }
+        });
 
-    public void setPos(int pos){
+        this.bot.setHeldAction(new ButtonAction() {
+            @Override
+            public void onAction() {
+                correction.setTarget(Heights.BOT.pos);
+            }
+        });
+
+        this.reset.setHeldAction(new ButtonAction() {
+            @Override
+            public void onAction() {
+                correction.setTarget(-100000); // Arbitrary value to drive it to the ground
+            }
+        });
 
     }
 
     @Override
     public void update() {
-        manual = true;
-//        if(!manual){
-//            if(Math.abs(override.get()) > 0.01){
-//                manual = true;
-//            }else{
-//                module.set(correction.get());
-//            }
-//        }else{
-            module.set(override.get());
-//        }
+        module.set(correction.get());
+        Debug.msg("Lift Correction", correction);
     }
-    private void calcClosestState(){
-        int min = 0;
-        for(int i = 1; i < positions.length; i++){
-            if(Math.abs(positions[i] - module.getDistance().get()) < positions[min]){
-                min = i;
-            }
-        }
-        pos = min;
-    }
+
 }

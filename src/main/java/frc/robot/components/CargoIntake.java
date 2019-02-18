@@ -9,7 +9,7 @@ import org.montclairrobotics.sprocket.motors.Module;
 import org.montclairrobotics.sprocket.motors.Motor;
 import org.montclairrobotics.sprocket.utils.Input;
 
-public class Intake implements Updatable {
+public class CargoIntake implements Updatable {
 
     private Input<Double> powerInput;
     private Button launch;
@@ -18,7 +18,7 @@ public class Intake implements Updatable {
     private boolean auto;
     private SplitButton rotate;
 
-    public Intake(Input<Double> powerInput, SplitButton rotate, Button launch, Module motorModule, Motor rotateMotor) {
+    public CargoIntake(Input<Double> powerInput, SplitButton rotate, Button launch, Module motorModule, Motor rotateMotor) {
         this.powerInput = powerInput;
         this.launch = launch;
         this.motorModule = motorModule;
@@ -50,7 +50,6 @@ public class Intake implements Updatable {
                 setDown();
             }
         }else{
-            motorModule.set(.5);
             setDown();
         }
     }

@@ -1,6 +1,8 @@
 package frc.robot.core;
 
+import edu.wpi.first.wpilibj.buttons.POVButton;
 import frc.robot.utils.MecanumInput;
+import frc.robot.utils.SPOVButton;
 import org.montclairrobotics.sprocket.control.Button;
 import org.montclairrobotics.sprocket.control.JoystickButton;
 
@@ -41,21 +43,31 @@ public class Control{
 
     public enum Port{
 
-        GYRO_LOCK(0,12), // Joystick: 0, Button: 12
-        FIELD_CENTRIC(0,6), // Joystick: 0, Button: 6
-        SOLENOID(0,7), // Joystick: 0, Button: 7
-        BALL_FIRE(1,7), // Joystick: 1, Button: 7
-        INTAKE_UP(1,1), // Joystick: 1, Button: 1
-        INTAKE_DOWN(1,3), // Joystick: 1, Button: 3
-        AUTO_HATCH(0,4), // Joystick: 0, Button: 4
-        LIFT_DOWN(1,1), // Joystick: 1, Button: 1
-        LIFT_UP(1,4); // Joystick: 1, Button: 4
+        // Driver-Assist
+        GYRO_LOCK(0,12,0),    // Joystick: Drive, Button: L3
+        FIELD_CENTRIC(0,6,0), // Joystick: Drive, Button: L1
+        ALIGNMENT(0,4,0),    // Joystick: Drive, Button: L2
 
-        private int stick, button;
+        // Lift Controls
+        LIFT_RESET(1,1,0),   // Joystick: Aux,  Button: Square
+        LIFT_BOT(1,2,0),     // Joystick: Aux,  Button: X
+        LIFT_MID(1,3,0),     // Joystick: Aux,  Button: Triangle
+        LIFT_TOP(1,4,0),     // Joystick: Aux,  Button Triangle
 
-        Port(int stick, int button){
+        // Intake Controls //TODO: Test POV Buttons
+        INTAKE_UP(1,1,0),    // Joystick: Aux, Button: DPAD Up
+        INTAKE_DOWN(1,4,180),  // Joystick: Aux, Button: DPAD Down
+
+        // Fire Controls
+        SOLENOID(1,7,0),     // Joystick: Aux, Button: L2
+        BALL_FIRE(1,8,0);    // Joystick: Aux, Button: R2
+
+        private int stick, button, angle;
+
+        Port(int stick, int button, int angle){
             this.stick = stick;
             this.button = button;
+            this.angle = angle;
         }
 
         public int getStick() {
@@ -65,6 +77,10 @@ public class Control{
         public int getButton() {
             return button;
         }
+
+        public int getAngle(){
+            return angle;
+        }
     }
 
     public static Joystick driveStick;
@@ -73,11 +89,14 @@ public class Control{
     public static MecanumInput dt_input;
 
     public static Button ballFire;
-    public static Button liftUp;
-    public static Button liftDown;
+
+    public static Button liftReset;
+    public static Button liftTop;
+    public static Button liftMid;
+    public static Button liftBot;
+
     public static Button intakeUp;
     public static Button intakeDown;
-
 
     public static Input<Double> DRIVE_RIGHT_X_AXIS;
     public static Input<Double> DRIVE_RIGHT_Y_AXIS;
@@ -96,11 +115,19 @@ public class Control{
         dt_input = new MecanumInput(driveStick, () -> -driveStick.getRawAxis(2));
 
         ballFire = new JoystickButton(Port.BALL_FIRE.getStick(), Port.BALL_FIRE.getButton());
-        liftUp = new JoystickButton(Port.LIFT_UP.getStick(), Port.LIFT_UP.getButton());
-        liftDown = new JoystickButton(Port.LIFT_DOWN.getStick(), Port.LIFT_DOWN.getButton());
 
-        intakeUp = new JoystickButton(Port.INTAKE_UP.getStick(), Port.INTAKE_UP.getButton());
-        intakeDown = new JoystickButton(Port.INTAKE_DOWN.getStick(), Port.INTAKE_DOWN.getButton());
+        liftReset = new JoystickButton(Port.LIFT_RESET.getStick(), Port.LIFT_RESET.getButton());
+        liftTop = new JoystickButton(Port.LIFT_TOP.getStick(), Port.LIFT_TOP.getButton());
+        liftMid = new JoystickButton(Port.LIFT_MID.getStick(), Port.LIFT_MID.getButton());
+        liftBot = new JoystickButton(Port.LIFT_BOT.getStick(), Port.LIFT_BOT.getButton());
+
+        intakeUp = new SPOVButton(Port.INTAKE_UP.getStick(),
+                Port.INTAKE_UP.getButton(),
+                Port.INTAKE_UP.getAngle());
+
+        intakeDown = new SPOVButton(Port.INTAKE_DOWN.getStick(),
+                Port.INTAKE_DOWN.getButton(),
+                Port.INTAKE_DOWN.getAngle());
 
         DRIVE_RIGHT_X_AXIS = () -> driveStick.getRawAxis(2);
         DRIVE_RIGHT_Y_AXIS = () -> driveStick.getRawAxis(5);

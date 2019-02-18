@@ -3,13 +3,13 @@ package frc.robot.core;
 
 import java.util.ArrayList;
 
+import frc.robot.components.Lift;
 import frc.robot.utils.FieldCentric;
 import frc.robot.utils.PressureRegulator;
 import frc.robot.utils.vision.VisionCorrection;
 import org.montclairrobotics.sprocket.SprocketRobot;
 import org.montclairrobotics.sprocket.control.DashboardInput;
-import frc.robot.components.Intake;
-import frc.robot.components.Lift;
+import frc.robot.components.CargoIntake;
 import frc.robot.utils.*;
 import org.montclairrobotics.sprocket.control.ToggleButton;
 import org.montclairrobotics.sprocket.drive.*;
@@ -64,7 +64,7 @@ public class Robot extends SprocketRobot {
 
     // Mechanisms
     Lift lift;
-    Intake intake;
+    CargoIntake cargoIntake;
 
     Compressor compressor;
     SSolenoid solenoid;
@@ -112,8 +112,8 @@ public class Robot extends SprocketRobot {
         ArrayList<Step<DTTarget>> steps = new ArrayList<>();
         hatchIntakeCorrection = new VisionCorrection(new DashboardInput("Hatch X"), new PID(1, 0, 0));
         hatchIntakeCorrection.setTarget(200); // TODO: Test and tune
-        new ToggleButton(Control.Port.AUTO_HATCH.getStick(),
-                Control.Port.AUTO_HATCH.getButton(),
+        new ToggleButton(Control.Port.ALIGNMENT.getStick(),
+                Control.Port.ALIGNMENT.getButton(),
                 hatchIntakeCorrection);
          steps.add(hatchIntakeCorrection);
         // steps.add(new VisionCorrection(new VisionTarget(CameraServer.getInstance().getVideo()), new PID(.1, 0, 0)));
@@ -131,18 +131,23 @@ public class Robot extends SprocketRobot {
 
         mainLimit = new LimitSwitch(9, true);
         secondLimit = new LimitSwitch(8, true);
+
         // Lift
-        lift = new Lift(Control.AUX_RIGHT_Y_AXIS, Control.liftUp, Control.liftDown, new Module(
+        lift = new Lift(new Module(
                 Hardware.lift_encoder, // Todo: Ticks Per inch
                 new PID(.5, .001, .01),
                 Module.MotorInputType.PERCENT,
                 new LimitedMotor(Hardware.lift_1, mainLimit, () -> Hardware.lift_encoder.getTicks() > 10000000),
                 new LimitedMotor(Hardware.lift_2, mainLimit, () -> Hardware.lift_encoder.getTicks() > 10000000),
-                new LimitedMotor(Hardware.lift_3, secondLimit, () -> Hardware.second_lift_encoder.getTicks() >  330000.0)
-        ));
+                new LimitedMotor(Hardware.lift_3, secondLimit, () -> Hardware.second_lift_encoder.getTicks() >  330000.0)),
+                Control.liftTop,
+                Control.liftMid,
+                Control.liftBot,
+                Control.liftReset
+        );
 
         // Intake
-        intake = new Intake(
+        cargoIntake = new CargoIntake(
                 Control.AUX_LEFT_Y_AXIS,
                 new SplitButton(
                         Control.intakeUp,
