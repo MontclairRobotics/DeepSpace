@@ -60,7 +60,10 @@ public class Control{
 
         // Fire Controls
         SOLENOID(1,7,0),     // Joystick: Aux, Button: L2
-        BALL_FIRE(1,8,0);    // Joystick: Aux, Button: R2
+        BALL_FIRE(1,8,0),    // Joystick: Aux, Button: R2
+
+        // Camera Controls
+        SWAP_CAMERA(1,14,0); // Joystick: Driver, Button: Touch Pad
 
         private int stick, button, angle;
 
@@ -98,6 +101,8 @@ public class Control{
     public static Button intakeUp;
     public static Button intakeDown;
 
+    public static Button swapCamera;
+
     public static Input<Double> DRIVE_RIGHT_X_AXIS;
     public static Input<Double> DRIVE_RIGHT_Y_AXIS;
     public static Input<Double> DRIVE_LEFT_X_AXIS;
@@ -128,6 +133,8 @@ public class Control{
         intakeDown = new SPOVButton(Port.INTAKE_DOWN.getStick(),
                 Port.INTAKE_DOWN.getButton(),
                 Port.INTAKE_DOWN.getAngle());
+
+        swapCamera = new JoystickButton(Port.SWAP_CAMERA.getStick(),Port.SWAP_CAMERA.getButton());
 
         DRIVE_RIGHT_X_AXIS = () -> driveStick.getRawAxis(2);
         DRIVE_RIGHT_Y_AXIS = () -> driveStick.getRawAxis(5);

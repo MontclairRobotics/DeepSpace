@@ -3,9 +3,11 @@ package frc.robot.core;
 
 import java.util.ArrayList;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import frc.robot.components.Lift;
 import frc.robot.utils.FieldCentric;
 import frc.robot.utils.PressureRegulator;
+import frc.robot.utils.vision.DriverCam;
 import frc.robot.utils.vision.VisionCorrection;
 import org.montclairrobotics.sprocket.SprocketRobot;
 import org.montclairrobotics.sprocket.control.DashboardInput;
@@ -72,12 +74,14 @@ public class Robot extends SprocketRobot {
     LimitSwitch mainLimit;
     LimitSwitch secondLimit;
 
+    DriverCam driverCam;
+
     @Override
     public void robotInit(){
         // Initialization
         Hardware.init();
         Control.init();
-        // CameraServer.getInstance().startAutomaticCapture();
+        DriverCam.init();
 
         // Drivetrain code
         DriveTrainBuilder dtBuilder = new DriveTrainBuilder();
