@@ -73,6 +73,7 @@ public class Hardware {
     public static WPI_TalonSRX lift_2;
     public static WPI_TalonSRX lift_3;
 
+    public static SEncoder t_encoder;
     public static SEncoder lift_encoder;
     public static SEncoder second_lift_encoder;
 
@@ -101,6 +102,7 @@ public class Hardware {
         dt_right_encoder = new Encoder(2, 3);
         intake_rotate_encoder = new Encoder(4, 5);
 
+        t_encoder = new TalonEncoder(lift_1, 1);
         lift_encoder = new TalonEncoder(lift_2, 1);
         second_lift_encoder = new TalonEncoder(lift_3, 1);
 

@@ -113,7 +113,7 @@ public class Robot extends SprocketRobot {
 
         // Add drive train steps
         ArrayList<Step<DTTarget>> steps = new ArrayList<>();
-        visionCorrection = new VisionCorrection(new DashboardInput("Hatch X"), new PID(1, 0, 0));
+        visionCorrection = new VisionCorrection(new DashboardInput("hatchX"), new PID(1, 0, 0));
         visionCorrection.setTarget(200); // TODO: Test and tune
         new ToggleButton(Control.driveStick, Control.Port.AUTO_HATCH, visionCorrection);
         // steps.add(visionCorrection);
@@ -137,7 +137,7 @@ public class Robot extends SprocketRobot {
                 Hardware.lift_encoder, // Todo: Ticks Per inch
                 new PID(.5, .001, .01),
                 Module.MotorInputType.PERCENT,
-                new LimitedMotor(Hardware.lift_1, mainLimit, () -> Hardware.lift_encoder.getTicks() > 10000000),
+                // new LimitedMotor(Hardware.lift_1, mainLimit, () -> Hardware.lift_encoder.getTicks() > 10000000),
                 new LimitedMotor(Hardware.lift_2, mainLimit, () -> Hardware.lift_encoder.getTicks() > 10000000),
                 new LimitedMotor(Hardware.lift_3, secondLimit, () -> Hardware.second_lift_encoder.getTicks() >  330000.0)
         ));
@@ -177,13 +177,16 @@ public class Robot extends SprocketRobot {
 
         mainLimit.get();
         secondLimit.get();
+        Debug.msg("zero lift encoder", Hardware.t_encoder.getTicks());
         Debug.msg("second lift encoder", Hardware.second_lift_encoder.getTicks());
         Debug.msg("Lift Encoder", Hardware.lift_encoder.getTicks());
+        Debug.msg("Lift Diff", Hardware.t_encoder.getTicks()-Math.abs(Hardware.lift_encoder.getTicks()));
         if(secondLimit.get()){
             Hardware.second_lift_encoder.reset();
         }
         if(mainLimit.get()){
             Hardware.lift_encoder.reset();
+            Hardware.t_encoder.reset();
         }
     }
 }
