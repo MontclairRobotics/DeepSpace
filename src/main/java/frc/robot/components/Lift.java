@@ -7,16 +7,24 @@ import org.montclairrobotics.sprocket.loop.Priority;
 import org.montclairrobotics.sprocket.loop.Updatable;
 import org.montclairrobotics.sprocket.loop.Updater;
 import org.montclairrobotics.sprocket.motors.Module;
+import org.montclairrobotics.sprocket.utils.Debug;
 import org.montclairrobotics.sprocket.utils.Input;
+import org.montclairrobotics.sprocket.utils.PID;
 
 public class Lift implements Updatable {
-    private int[] positions = {0}; // Todo: test for values
+    private int[] positions = {
+            0,
+            -650110/3,
+            -650110/2,
+            -2 * 650110 /3,
+            -650110
+    }; // Todo: test for values
     private Input<Double> override;
     private Button up;
     private Button down;
     private int pos = 0;
     public boolean manual;
-    private BangBang correction = new BangBang(50, 1);
+    private PID correction = new PID(.1, 0, 0);
     private Module module;
 
     public Lift(Input<Double> override, Button up, Button down, Module m){
@@ -41,28 +49,33 @@ public class Lift implements Updatable {
     }
 
     public void increment(){
-        if(manual){
-            calcClosestState();
-            manual = false;
-        }
+        manual = false;
+//        if(manual){
+//            calcClosestState();
+//            manual = false;
+//        }
         if(pos + 1 < positions.length){
             pos++;
         }
+        correction.setTarget(positions[pos]);
     }
 
     public void decrement(){
-        if(manual){
-            calcClosestState();
-            manual = false;
-        }
+        manual = false;
+//        if(manual){
+//            calcClosestState();
+//            manual = false;
+//        }
         if(pos - 1 > 0){
             pos--;
         }
+        correction.setTarget(positions[pos]);
     }
 
 
     @Override
     public void update() {
+        correction.setTarget(positions[pos]);
         if(!manual){
             if(Math.abs(override.get()) > 0.01){
                 manual = true;
@@ -72,11 +85,15 @@ public class Lift implements Updatable {
         }else{
             module.set(override.get());
         }
+        Debug.msg("Lift Pos", pos);
+        Debug.msg("Lift tics", module.getEnc().getTicks());
+        Debug.msg("Lift Correction", correction.get());
+        Debug.msg("Lift Target", correction.getTarget());
     }
     private void calcClosestState(){
         int min = 0;
-        for(int i = 1; i < positions.length; i++){
-            if(Math.abs(positions[i] - module.getDistance().get()) < positions[min]){
+        for(int i = 0; i < positions.length; i++){
+            if(Math.abs(positions[i] - module.getEnc().getTicks()) < Math.abs(positions[min] - module.getEnc().getTicks())){
                 min = i;
             }
         }

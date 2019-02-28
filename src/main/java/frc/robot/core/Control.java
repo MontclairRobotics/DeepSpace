@@ -47,13 +47,13 @@ public class Control{
 
         public static final int SOLENOID = 7;
 
-        public static final int BALL_FIRE = 7;
+        public static final int BALL_FIRE = 8;
         public static final int INTAKE_UP = 1;
         public static final int INTAKE_DOWN = 3;
 
         public static final int AUTO_HATCH = 4;
 
-        public static final int LIFT_DOWN = 1;
+        public static final int LIFT_DOWN = 2;
         public static final int LIFT_UP = 4;
 
     }

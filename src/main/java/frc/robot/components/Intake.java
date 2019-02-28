@@ -2,6 +2,7 @@ package frc.robot.components;
 
 import frc.robot.utils.SplitButton;
 import org.montclairrobotics.sprocket.control.Button;
+import org.montclairrobotics.sprocket.control.ButtonAction;
 import org.montclairrobotics.sprocket.loop.Priority;
 import org.montclairrobotics.sprocket.loop.Updatable;
 import org.montclairrobotics.sprocket.loop.Updater;
@@ -18,14 +19,36 @@ public class Intake implements Updatable {
     private boolean auto;
     private SplitButton rotate;
 
-    public Intake(Input<Double> powerInput, SplitButton rotate, Button launch, Module motorModule, Motor rotateMotor) {
+    public Intake(Input<Double> powerInput, Button rotateUp, Button rotateDown, Button launch, Module motorModule, Motor rotateMotor) {
         this.powerInput = powerInput;
         this.launch = launch;
         this.motorModule = motorModule;
         this.rotateMotor = rotateMotor;
-        this.rotate = rotate;
         Updater.add(this, Priority.HIGH);
-
+        rotateUp.setPressAction(new ButtonAction() {
+            @Override
+            public void onAction() {
+                setUp();
+            }
+        });
+        rotateUp.setReleaseAction(new ButtonAction() {
+            @Override
+            public void onAction() {
+                rotateMotor.set(0);
+            }
+        });
+        rotateDown.setPressAction(new ButtonAction() {
+            @Override
+            public void onAction() {
+                setDown();
+            }
+        });
+        rotateDown.setReleaseAction(new ButtonAction() {
+            @Override
+            public void onAction() {
+                rotateMotor.set(0);
+            }
+        });
     }
 
     public double getPower(){
@@ -43,14 +66,8 @@ public class Intake implements Updatable {
                 motorPower = 1;
             }
             motorModule.set(motorPower);
-
-            if(rotate.get()){
-                setUp();
-            }else{
-                setDown();
-            }
         }else{
-            motorModule.set(.5);
+            motorModule.set(.1);
             setDown();
         }
     }
@@ -64,10 +81,10 @@ public class Intake implements Updatable {
     }
 
     public void setUp(){
-        // Todo: Wait for electronics for implementation
+        rotateMotor.set(1);
     }
 
     public void setDown(){
-        // Todo: Wait for electronics for implementation
+        rotateMotor.set(-1);
     }
 }

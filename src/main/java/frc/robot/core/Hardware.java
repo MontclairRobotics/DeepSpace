@@ -67,7 +67,7 @@ public class Hardware {
     public static WPI_VictorSPX intake_left;
     public static WPI_TalonSRX intake_rotate;
 
-    public static Encoder intake_rotate_encoder;
+    public static SEncoder intake_rotate_encoder;
 
     public static WPI_TalonSRX lift_1;
     public static WPI_TalonSRX lift_2;
@@ -90,6 +90,7 @@ public class Hardware {
 
         intake_right  = new WPI_TalonSRX(DeviceID.INTAKE_MOTOR_RIGHT);
         intake_left   = new WPI_VictorSPX(DeviceID.INTAKE_MOTOR_LEFT);
+        intake_left.setInverted(true);
         intake_rotate = new WPI_TalonSRX(DeviceID.INTAKE_MOTOR_ROTATE);
 
         lift_1        = new WPI_TalonSRX(DeviceID.LIFT_MOTOR_1);
@@ -100,7 +101,7 @@ public class Hardware {
 
         dt_left_encoder = new Encoder(0, 1);
         dt_right_encoder = new Encoder(2, 3);
-        intake_rotate_encoder = new Encoder(4, 5);
+        intake_rotate_encoder = new TalonEncoder(intake_rotate, 1);
 
         t_encoder = new TalonEncoder(lift_1, 1);
         lift_encoder = new TalonEncoder(lift_2, 1);

@@ -138,17 +138,16 @@ public class Robot extends SprocketRobot {
                 new PID(.5, .001, .01),
                 Module.MotorInputType.PERCENT,
                 // new LimitedMotor(Hardware.lift_1, mainLimit, () -> Hardware.lift_encoder.getTicks() > 10000000),
-                new LimitedMotor(Hardware.lift_2, mainLimit, () -> Hardware.lift_encoder.getTicks() > 10000000),
+                new LimitedMotor(Hardware.lift_2, mainLimit, () -> Hardware.lift_encoder.getTicks() < -600000),
                 new LimitedMotor(Hardware.lift_3, secondLimit, () -> Hardware.second_lift_encoder.getTicks() >  330000.0)
         ));
 
         // Intake
         intake = new Intake(
                 Control.AUX_LEFT_Y_AXIS,
-                new SplitButton(
-                        Control.intakeUp,
-                        Control.intakeDown
-                ),
+                    Control.intakeUp,
+                    Control.intakeDown
+                ,
                 Control.ballFire, new Module(
                     null,
                     null,
@@ -156,7 +155,7 @@ public class Robot extends SprocketRobot {
                     new Motor(Hardware.intake_left),
                     new Motor(Hardware.intake_right)
                 ),
-                new Motor(Hardware.intake_rotate)
+                new LimitedMotor(Hardware.intake_rotate, () -> Hardware.intake_rotate_encoder.get() < -546841, () -> Hardware.intake_rotate_encoder.get() > 10)
         );
 
 
