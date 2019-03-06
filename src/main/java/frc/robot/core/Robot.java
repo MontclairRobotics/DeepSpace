@@ -3,10 +3,12 @@ package frc.robot.core;
 
 import java.util.ArrayList;
 
-import frc.robot.utils.FieldCentric;
-import frc.robot.utils.PressureRegulator;
+import frc.robot.components.Intake;
+import frc.robot.components.Lift;
+import frc.robot.utils.*;
 import org.montclairrobotics.sprocket.SprocketRobot;
 import org.montclairrobotics.sprocket.control.ButtonAction;
+import org.montclairrobotics.sprocket.control.JoystickYAxis;
 import org.montclairrobotics.sprocket.control.ToggleButton;
 import org.montclairrobotics.sprocket.drive.*;
 import org.montclairrobotics.sprocket.drive.steps.GyroCorrection;
@@ -15,7 +17,9 @@ import org.montclairrobotics.sprocket.drive.utils.GyroLock;
 import org.montclairrobotics.sprocket.geometry.Degrees;
 import org.montclairrobotics.sprocket.geometry.Polar;
 import org.montclairrobotics.sprocket.geometry.XY;
+import org.montclairrobotics.sprocket.motors.Module;
 import org.montclairrobotics.sprocket.motors.Motor;
+import org.montclairrobotics.sprocket.motors.SEncoder;
 import org.montclairrobotics.sprocket.pipeline.Step;
 import org.montclairrobotics.sprocket.utils.Debug;
 import org.montclairrobotics.sprocket.utils.PID;
@@ -53,6 +57,10 @@ public class Robot extends SprocketRobot {
     GyroLock lock;
     FieldCentric fieldCentric;
     Sensitivity sensitivity;
+    Orientation orientation;
+
+    Lift lift;
+    Intake intake;
 
     Compressor compressor;
     Solenoid solenoid;
@@ -63,7 +71,6 @@ public class Robot extends SprocketRobot {
         // Initialization
         Hardware.init();
         Control.init();
-
 
         // Drivetrain code
         DriveTrainBuilder dtBuilder = new DriveTrainBuilder();
@@ -90,6 +97,7 @@ public class Robot extends SprocketRobot {
         correction = new GyroCorrection(Hardware.gyro, new PID(-0.3, 0, -0.00035), 90, 1);
         fieldCentric = new FieldCentric(correction);
         lock = new GyroLock(correction);
+        orientation = new Orientation(correction);
         sensitivity = new Sensitivity(0.3);
         correction.reset();
 
@@ -97,6 +105,7 @@ public class Robot extends SprocketRobot {
         ArrayList<Step<DTTarget>> steps = new ArrayList<>();
         steps.add(correction);
         steps.add(fieldCentric);
+        steps.add(orientation);
         steps.add(sensitivity);
         driveTrain.setPipeline(new DTPipeline(steps));
 
@@ -105,6 +114,26 @@ public class Robot extends SprocketRobot {
         solenoid = new Solenoid(3);
         PressureRegulator p = new PressureRegulator(compressor);
         p.enable();
+
+
+        // Lift
+        lift = new Lift(Control.AUX_RIGHT_Y_AXIS, Control.liftUp, Control.liftDown, new Module(
+                new SEncoder(Hardware.lift_encoder, 1), // Todo: Ticks Per inch
+                null,
+                Module.MotorInputType.PERCENT,
+                new LimitedMotor(Hardware.lift_1, new LimitSwitch(0)),
+                new LimitedMotor(Hardware.lift_2, new LimitSwitch(1)),
+                new LimitedMotor(Hardware.lift_3, new LimitSwitch(2))
+        ));
+
+        // Intake
+        intake = new Intake(Control.AUX_LEFT_Y_AXIS, Control.ballFire, new Module(
+                new SEncoder(Hardware.intake_encoder, 1),
+                new PID(1, 0, 0),
+                Module.MotorInputType.PERCENT,
+                new Motor(Hardware.intake_left),
+                new Motor(Hardware.intake_right)
+        ));
 
 
         // BUTTONS
