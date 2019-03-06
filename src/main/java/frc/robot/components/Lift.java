@@ -24,7 +24,7 @@ public class Lift implements Updatable {
     private Button down;
     private int pos = 0;
     public boolean manual;
-    private PID correction = new PID(.1, 0, 0);
+    private PID correction = new PID(.00001, 0, 0);
     private Module module;
 
     public Lift(Input<Double> override, Button up, Button down, Module m){
@@ -50,10 +50,10 @@ public class Lift implements Updatable {
 
     public void increment(){
         manual = false;
-//        if(manual){
+        if(manual){
 //            calcClosestState();
-//            manual = false;
-//        }
+            manual = false;
+        }
         if(pos + 1 < positions.length){
             pos++;
         }
@@ -62,10 +62,10 @@ public class Lift implements Updatable {
 
     public void decrement(){
         manual = false;
-//        if(manual){
+        if(manual){
 //            calcClosestState();
-//            manual = false;
-//        }
+            manual = false;
+        }
         if(pos - 1 > 0){
             pos--;
         }

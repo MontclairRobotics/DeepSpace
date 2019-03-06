@@ -52,6 +52,7 @@ public class Control{
         public static final int INTAKE_DOWN = 3;
 
         public static final int AUTO_HATCH = 4;
+        public static final int AUTO_TAPE = 5;
 
         public static final int LIFT_DOWN = 2;
         public static final int LIFT_UP = 4;
@@ -70,6 +71,7 @@ public class Control{
     public static Button liftDown;
     public static Button intakeUp;
     public static Button intakeDown;
+    public static Button gyroLock;
 
 
     public static Input<Double> DRIVE_RIGHT_X_AXIS;
@@ -88,6 +90,7 @@ public class Control{
 
         dt_input = new MecanumInput(driveStick, () -> -driveStick.getRawAxis(2));
 
+        gyroLock = new JoystickButton(driveStick, Port.GYRO_LOCK);
         solenoid = new JoystickButton(driveStick, Port.SOLENOID);
         ballFire = new JoystickButton(auxStick, Port.BALL_FIRE);
         liftUp = new JoystickButton(auxStick, Port.LIFT_UP);

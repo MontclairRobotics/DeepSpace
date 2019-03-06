@@ -13,19 +13,19 @@ public class UltrasonicCorrection implements DTStep, Togglable {
 
     private UltrasonicSensor sensor;
     private PID correction;
-    private Angle direction;
     private boolean enabled;
 
-    public UltrasonicCorrection(UltrasonicSensor sensor, Angle angle, PID correction){
+    public UltrasonicCorrection(UltrasonicSensor sensor, double target, PID correction){
         this.correction = correction;
         this.sensor = sensor;
-        this.direction = angle;
+        correction.setTarget(target);
+        correction.setInput(sensor);
     }
 
     @Override
     public DTTarget get(DTTarget dtTarget) {
         if (enabled) {
-            return new DTTarget(new Polar(correction.get(), direction), dtTarget.getTurn());
+            return new DTTarget(new Polar(correction.get(), Angle.ZERO), dtTarget.getTurn());
         }else{
             return dtTarget;
         }

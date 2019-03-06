@@ -62,16 +62,13 @@ public class VisionCorrection implements DTStep, Togglable {
 
     @Override
     public DTTarget get(DTTarget dtTarget) {
-        if(enabled && SmartDashboard.getBoolean("Hatch Detected",false)){
+        debug();
+        if(enabled){
             return new DTTarget(
                 dtTarget.getDirection(), 
-                dtTarget.getTurn().add(new Degrees(correction.get()))
+                new Degrees(correction.get())
             );
         }
-        Debug.msg("Vision Target Current", visionIn.get());
-        Debug.msg("Vision Target", target);
-        Debug.msg("Correction", correction.get());
-        debug();
         return dtTarget;
     }
 

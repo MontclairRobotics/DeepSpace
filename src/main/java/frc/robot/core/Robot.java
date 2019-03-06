@@ -4,6 +4,8 @@ package frc.robot.core;
 import java.util.ArrayList;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.utils.FieldCentric;
 import frc.robot.utils.PressureRegulator;
 import org.montclairrobotics.sprocket.SprocketRobot;
@@ -104,7 +106,7 @@ public class Robot extends SprocketRobot {
         }
 
         // Create drive train steps
-        correction = new GyroCorrection(Hardware.gyro, new PID(-0.3, 0, -0.00035), 90, 1);
+        correction = new GyroCorrection(Hardware.gyro, new PID(-0.3, 0, 0.00035), 90, 1);
         fieldCentric = new FieldCentric(correction);
         lock = new GyroLock(correction);
         orientation = new Orientation(correction);
@@ -113,14 +115,21 @@ public class Robot extends SprocketRobot {
 
         // Add drive train steps
         ArrayList<Step<DTTarget>> steps = new ArrayList<>();
-        visionCorrection = new VisionCorrection(new DashboardInput("hatchX"), new PID(1, 0, 0));
+        NetworkTableInstance table = NetworkTableInstance.getDefault();
+        visionCorrection = new VisionCorrection(new HatchInput(), new PID(10, 0, 0));
+        VisionCorrection tapeVisionCorrection = new VisionCorrection(new GripTapeInput(), new PID(10, 0, -.01));
+        UltrasonicCorrection ultrasonicCorrection = new UltrasonicCorrection(new UltrasonicSensor(8), 1000, new PID(.01, 0, 0))
         visionCorrection.setTarget(200); // TODO: Test and tune
+        tapeVisionCorrection.setTarget(70);
+
         new ToggleButton(Control.driveStick, Control.Port.AUTO_HATCH, visionCorrection);
-        // steps.add(visionCorrection);
-        // steps.add(new VisionCorrection(new VisionTarget(CameraServer.getInstance().getVideo()), new PID(.1, 0, 0)));
+        new ToggleButton(Control.driveStick, Control.Port.AUTO_TAPE, tapeVisionCorrection);
+
+        steps.add(visionCorrection);
         steps.add(correction);
         steps.add(fieldCentric);
         steps.add(orientation);
+        steps.add(tapeVisionCorrection);
         steps.add(sensitivity);
         driveTrain.setPipeline(new DTPipeline(steps));
 

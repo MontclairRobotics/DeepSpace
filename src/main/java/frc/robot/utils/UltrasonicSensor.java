@@ -6,17 +6,14 @@ import org.montclairrobotics.sprocket.utils.Input;
 
 public class UltrasonicSensor implements Input<Double> {
     AnalogInput analogInput;
-    Ultrasonic ultrasonic;
-
-
-
-    public UltrasonicSensor(){
-
+    
+    public UltrasonicSensor(int channel){
+        analogInput = new AnalogInput(channel);
     }
 
     @Override
     public Double get() {
-        return null;
+        return analogInput.getVoltage() * 5;
     }
 
 }
