@@ -118,7 +118,7 @@ public class Robot extends SprocketRobot {
         NetworkTableInstance table = NetworkTableInstance.getDefault();
         visionCorrection = new VisionCorrection(new HatchInput(), new PID(10, 0, 0));
         VisionCorrection tapeVisionCorrection = new VisionCorrection(new GripTapeInput(), new PID(10, 0, -.01));
-        UltrasonicCorrection ultrasonicCorrection = new UltrasonicCorrection(new UltrasonicSensor(8), 1000, new PID(.01, 0, 0))
+        UltrasonicCorrection ultrasonicCorrection = new UltrasonicCorrection(new UltrasonicSensor(8), 1000, new PID(.01, 0, 0));git
         visionCorrection.setTarget(200); // TODO: Test and tune
         tapeVisionCorrection.setTarget(70);
 
