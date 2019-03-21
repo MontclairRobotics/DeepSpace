@@ -12,17 +12,14 @@ public class UltrasonicSensor implements Input<Double> {
     public UltrasonicSensor(int channel){
         this.channel = channel;
     }
-    public void analogValues(){
-        int raw = sensor.getValue();
-        double volts = sensor.getVoltage();
-    }
     public void analogInit(){
         sensor = new AnalogInput(channel);
-
     }
     @Override
     public Double get() {
-        double range = sensor.getRangeInches(); //  fix this
-        return range;
+        double volts = sensor.getVoltage(); //gets volts
+        double mm = volts * 5 / 4.88 * 1000; //converts volts into millimeters
+        double inches = mm * 0.0394; //converts millimeters to inches
+        return inches;
     }
 }
