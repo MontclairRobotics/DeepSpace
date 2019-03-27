@@ -5,6 +5,7 @@ import org.montclairrobotics.sprocket.control.DashboardInput;
 import org.montclairrobotics.sprocket.drive.DTStep;
 import org.montclairrobotics.sprocket.drive.DTTarget;
 import org.montclairrobotics.sprocket.geometry.Degrees;
+import org.montclairrobotics.sprocket.geometry.XY;
 import org.montclairrobotics.sprocket.utils.Debug;
 import org.montclairrobotics.sprocket.utils.Input;
 import org.montclairrobotics.sprocket.utils.PID;
@@ -65,8 +66,9 @@ public class VisionCorrection implements DTStep, Togglable {
         debug();
         if(enabled){
             return new DTTarget(
-                dtTarget.getDirection(), 
-                new Degrees(correction.get())
+                new XY(correction.get(), dtTarget.getDirection().getY()),
+                dtTarget.getTurn()
+                    //new Degrees(correction.get())
             );
         }
         return dtTarget;

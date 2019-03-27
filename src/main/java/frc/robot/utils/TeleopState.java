@@ -15,6 +15,8 @@ public class TeleopState implements State {
     @Override
     public void start() {
         sprocketRobot.start();
+        sprocketRobot.teleopInit();
+        SprocketRobot.getDriveTrain().useDefaultInput();
     }
 
     @Override
@@ -24,7 +26,7 @@ public class TeleopState implements State {
 
     @Override
     public void stateUpdate() {
-        sprocketRobot.sprocketUpdate();
+        //sprocketRobot.sprocketUpdate();
     }
 
     @Override

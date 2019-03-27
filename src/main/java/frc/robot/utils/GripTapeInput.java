@@ -7,7 +7,7 @@ import org.montclairrobotics.sprocket.utils.Input;
 public class GripTapeInput implements Input<Double> {
     private NetworkTableInstance tableInstance;
     private NetworkTableEntry x;
-    private double[] xCoords = new double[2];
+    private double[] xCoord = new double[1];
 
     public GripTapeInput(){
         tableInstance = NetworkTableInstance.getDefault();
@@ -15,8 +15,12 @@ public class GripTapeInput implements Input<Double> {
 
     @Override
     public Double get() {
-        x = tableInstance.getEntry("x");
-        xCoords = x.getDoubleArray(new double[]{70, 70});
-        return (xCoords[0] + xCoords[1])/2;
+        x = tableInstance.getTable("GRIP/Tape").getEntry("centerX");
+        xCoord = x.getDoubleArray(new double[]{120});
+        try {
+            return xCoord[0];
+        }catch (ArrayIndexOutOfBoundsException e){
+            return 120D;
+        }
     }
 }

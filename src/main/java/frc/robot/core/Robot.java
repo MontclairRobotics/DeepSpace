@@ -7,15 +7,18 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.utils.FieldCentric;
+import frc.robot.utils.MecanumMapper;
 import frc.robot.utils.PressureRegulator;
 import org.montclairrobotics.sprocket.SprocketRobot;
 import org.montclairrobotics.sprocket.auto.AutoMode;
+import org.montclairrobotics.sprocket.auto.states.DriveTime;
 import org.montclairrobotics.sprocket.control.DashboardInput;
 import frc.robot.components.Intake;
 import frc.robot.components.Lift;
 import frc.robot.utils.*;
 import org.montclairrobotics.sprocket.control.ToggleButton;
 import org.montclairrobotics.sprocket.drive.*;
+import org.montclairrobotics.sprocket.drive.steps.Deadzone;
 import org.montclairrobotics.sprocket.drive.steps.GyroCorrection;
 import org.montclairrobotics.sprocket.drive.steps.Sensitivity;
 import org.montclairrobotics.sprocket.drive.utils.GyroLock;
@@ -63,9 +66,12 @@ public class Robot extends SprocketRobot {
     GyroCorrection correction;
     GyroLock lock;
     FieldCentric fieldCentric;
+
+
+
     Sensitivity sensitivity;
     VisionCorrection visionCorrection;
-    Orientation orientation;
+    // Orientation orientation;
 
     // Mechanisms
     Lift lift;
@@ -76,13 +82,14 @@ public class Robot extends SprocketRobot {
 
     LimitSwitch mainLimit;
     LimitSwitch secondLimit;
+    LimitSwitch intakeLimit;
 
     @Override
     public void robotInit(){
         // Initialization
         Hardware.init();
         Control.init();
-        // CameraServer.getInstance().startAutomaticCapture();
+        CameraServer.getInstance().startAutomaticCapture();
 
         // Drivetrain code
         DriveTrainBuilder dtBuilder = new DriveTrainBuilder();
@@ -106,31 +113,33 @@ public class Robot extends SprocketRobot {
         }
 
         // Create drive train steps
-        correction = new GyroCorrection(Hardware.gyro, new PID(-0.3, 0, 0.00035), 90, 1);
+        correction = new GyroCorrection(Hardware.gyro, new PID(-0.3, 0, -0.00035), 90, 1);
         fieldCentric = new FieldCentric(correction);
         lock = new GyroLock(correction);
-        orientation = new Orientation(correction);
-        sensitivity = new Sensitivity(0.3);
+        //orientation = new Orientation(correction);
+        sensitivity = new Sensitivity(0.4, .1);
         correction.reset();
 
         // Add drive train steps
         ArrayList<Step<DTTarget>> steps = new ArrayList<>();
         NetworkTableInstance table = NetworkTableInstance.getDefault();
-        visionCorrection = new VisionCorrection(new HatchInput(), new PID(10, 0, 0));
-        VisionCorrection tapeVisionCorrection = new VisionCorrection(new GripTapeInput(), new PID(10, 0, -.01));
-        UltrasonicCorrection ultrasonicCorrection = new UltrasonicCorrection(new UltrasonicSensor(8), 1000, new PID(.01, 0, 0))
-        visionCorrection.setTarget(200); // TODO: Test and tune
-        tapeVisionCorrection.setTarget(70);
+        visionCorrection = new VisionCorrection(new HatchInput(), new PID(.01, 0, 0));
+        VisionCorrection tapeVisionCorrection = new VisionCorrection(new GripTapeInput(), new PID(1, 0, -.01));
+        // UltrasonicCorrection ultrasonicCorrection = new UltrasonicCorrection(new UltrasonicSensor(8), 1000, new PID(.01, 0, 0));
+        // visionCorrection.setTarget(200); // TODO: Test and tune
+        tapeVisionCorrection.setTarget(120);
 
-        new ToggleButton(Control.driveStick, Control.Port.AUTO_HATCH, visionCorrection);
-        new ToggleButton(Control.driveStick, Control.Port.AUTO_TAPE, tapeVisionCorrection);
+        new ToggleButton(Control.driveStick, Control.Port.AUTO_TAPE, visionCorrection);
+        // new ToggleButton(Control.driveStick, Control.Port.AUTO_TAPE, tapeVisionCorrection);
 
-        steps.add(visionCorrection);
-        steps.add(correction);
-        steps.add(fieldCentric);
-        steps.add(orientation);
+        // steps.add(visionCorrection);
+
+        // steps.add(orientation);
         steps.add(tapeVisionCorrection);
         steps.add(sensitivity);
+        steps.add(fieldCentric);
+        steps.add(correction);
+        steps.add(new Deadzone(0.01, 0.01));
         driveTrain.setPipeline(new DTPipeline(steps));
 
         // Pneumatics
@@ -141,6 +150,7 @@ public class Robot extends SprocketRobot {
 
         mainLimit = new LimitSwitch(9, true);
         secondLimit = new LimitSwitch(8, true);
+        intakeLimit = new LimitSwitch(23, false);
         // Lift
         lift = new Lift(Control.AUX_RIGHT_Y_AXIS, Control.liftUp, Control.liftDown, new Module(
                 Hardware.lift_encoder, // Todo: Ticks Per inch
@@ -164,7 +174,9 @@ public class Robot extends SprocketRobot {
                     new Motor(Hardware.intake_left),
                     new Motor(Hardware.intake_right)
                 ),
-                new LimitedMotor(Hardware.intake_rotate, () -> Hardware.intake_rotate_encoder.get() < -546841, () -> Hardware.intake_rotate_encoder.get() > 10)
+                new LimitedMotor(Hardware.intake_rotate, () -> intakeLimit.get(), () ->  Hardware.intake_rotate_encoder.getTicks() > -100 )
+                //new LimitedMotor(Hardware.intake_rotate, () -> false/*Hardware.intake_rotate_encoder.getTicks() <  -546841*/, () ->  false/*Hardware.intake_rotate_encoder.getTicks() > -100*/)
+
         );
 
 
@@ -172,9 +184,14 @@ public class Robot extends SprocketRobot {
         ToggleButton fieldCentricButton = new ToggleButton(Control.driveStick, Control.Port.FIELD_CENTRIC, fieldCentric);
         ToggleButton gyroLockButton = new ToggleButton(Control.driveStick, Control.Port.GYRO_LOCK, lock);
         ToggleButton solenoidButton = new ToggleButton(Control.auxStick, Control.Port.SOLENOID, solenoid);
-
+        addAutoMode(new AutoMode("Teleop", new DriveTime(2, .5), new TeleopState(this)));
         // addAutoMode(new AutoMode("Path test", new PathState("Test"), new TeleopState(this)));
 
+    }
+
+    @Override
+    public void userTeleopInit() {
+        Hardware.intake_rotate_encoder.reset();
     }
 
     @Override
@@ -189,6 +206,7 @@ public class Robot extends SprocketRobot {
         Debug.msg("second lift encoder", Hardware.second_lift_encoder.getTicks());
         Debug.msg("Lift Encoder", Hardware.lift_encoder.getTicks());
         Debug.msg("Lift Diff", Hardware.t_encoder.getTicks()-Math.abs(Hardware.lift_encoder.getTicks()));
+        Debug.msg("Rotate Encoder", Hardware.intake_rotate_encoder.getTicks());
         if(secondLimit.get()){
             Hardware.second_lift_encoder.reset();
         }
@@ -196,5 +214,7 @@ public class Robot extends SprocketRobot {
             Hardware.lift_encoder.reset();
             Hardware.t_encoder.reset();
         }
+        Debug.msg("Intake up", Control.intakeUp.get());
+        Debug.msg("Intake down", Control.intakeDown.get());
     }
 }

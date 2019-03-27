@@ -42,7 +42,7 @@ public class Control{
         public static final int DRIVE_STICK = 0;
         public static final int AUX_STICK = 1;
 
-        public static final int GYRO_LOCK = 12;
+        public static final int GYRO_LOCK = 7;
         public static final int FIELD_CENTRIC = 6;
 
         public static final int SOLENOID = 7;
@@ -51,8 +51,8 @@ public class Control{
         public static final int INTAKE_UP = 1;
         public static final int INTAKE_DOWN = 3;
 
-        public static final int AUTO_HATCH = 4;
-        public static final int AUTO_TAPE = 5;
+        public static final int AUTO_HATCH = 3;
+        public static final int AUTO_TAPE = 4;
 
         public static final int LIFT_DOWN = 2;
         public static final int LIFT_UP = 4;

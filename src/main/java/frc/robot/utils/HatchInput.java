@@ -2,6 +2,7 @@ package frc.robot.utils;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.montclairrobotics.sprocket.utils.Input;
 
 public class HatchInput implements Input<Double> {
@@ -16,6 +17,6 @@ public class HatchInput implements Input<Double> {
     @Override
     public Double get() {
         x = tableInstance.getEntry("hatchX");
-        return x.getDouble(200);
+        return SmartDashboard.getNumber("hatchX", 200);
     }
 }

@@ -13,7 +13,7 @@ public class MecanumInput implements DTInput {
         translate = new Input<Vector>() {
             @Override
             public Vector get() {
-                return new XY(-translateStick.getRawAxis(0), translateStick.getRawAxis(5));
+                return new XY(-translateStick.getRawAxis(0) * 2, translateStick.getRawAxis(5));
             }
         };
 

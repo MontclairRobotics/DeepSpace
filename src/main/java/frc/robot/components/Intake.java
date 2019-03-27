@@ -1,5 +1,6 @@
 package frc.robot.components;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utils.SplitButton;
 import org.montclairrobotics.sprocket.control.Button;
 import org.montclairrobotics.sprocket.control.ButtonAction;
@@ -8,6 +9,7 @@ import org.montclairrobotics.sprocket.loop.Updatable;
 import org.montclairrobotics.sprocket.loop.Updater;
 import org.montclairrobotics.sprocket.motors.Module;
 import org.montclairrobotics.sprocket.motors.Motor;
+import org.montclairrobotics.sprocket.utils.Debug;
 import org.montclairrobotics.sprocket.utils.Input;
 
 public class Intake implements Updatable {
@@ -25,7 +27,7 @@ public class Intake implements Updatable {
         this.motorModule = motorModule;
         this.rotateMotor = rotateMotor;
         Updater.add(this, Priority.HIGH);
-        rotateUp.setPressAction(new ButtonAction() {
+        rotateUp.setHeldAction(new ButtonAction() {
             @Override
             public void onAction() {
                 setUp();
@@ -37,7 +39,7 @@ public class Intake implements Updatable {
                 rotateMotor.set(0);
             }
         });
-        rotateDown.setPressAction(new ButtonAction() {
+        rotateDown.setHeldAction(new ButtonAction() {
             @Override
             public void onAction() {
                 setDown();
@@ -63,13 +65,14 @@ public class Intake implements Updatable {
                 motorPower = powerInput.get();
             }
             if (launch.get()) {
-                motorPower = 1;
+                motorPower = -1;
             }
             motorModule.set(motorPower);
         }else{
             motorModule.set(.1);
             setDown();
         }
+        Debug.msg("intake Power", rotateMotor.getMotor().get());
     }
 
     public void enableAuto(){
@@ -81,10 +84,12 @@ public class Intake implements Updatable {
     }
 
     public void setUp(){
-        rotateMotor.set(1);
+        Debug.msg("Intake Rotate", "Up");
+        rotateMotor.set(.25);
     }
 
     public void setDown(){
-        rotateMotor.set(-1);
+        Debug.msg("Intake Rotate", "Down");
+        rotateMotor.set(-.25);
     }
 }
