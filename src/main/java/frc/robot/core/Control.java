@@ -44,18 +44,21 @@ public class Control{
 
         public static final int GYRO_LOCK = 7;
         public static final int FIELD_CENTRIC = 6;
+        public static final int INVERT_DT = 5;
 
-        public static final int SOLENOID = 7;
+        // public static final int SOLENOID = 7;
 
         public static final int BALL_FIRE = 8;
         public static final int INTAKE_UP = 1;
         public static final int INTAKE_DOWN = 3;
+        public static final int HATCH_IN = 2; // X
+        public static final int HATCH_OUT = 7; // Left Trigger
 
         public static final int AUTO_HATCH = 3;
-        public static final int AUTO_TAPE = 4;
+        public static final int AUTO_TAPE = 8;
 
-        public static final int LIFT_DOWN = 2;
-        public static final int LIFT_UP = 4;
+        public static final int LIFT_DOWN = 5;
+        public static final int LIFT_UP = 6;
 
     }
 
@@ -72,6 +75,9 @@ public class Control{
     public static Button intakeUp;
     public static Button intakeDown;
     public static Button gyroLock;
+    public static Button invertDt;
+    public static Button hatchIn;
+    public static Button hatchOut;
 
 
     public static Input<Double> DRIVE_RIGHT_X_AXIS;
@@ -91,10 +97,14 @@ public class Control{
         dt_input = new MecanumInput(driveStick, () -> -driveStick.getRawAxis(2));
 
         gyroLock = new JoystickButton(driveStick, Port.GYRO_LOCK);
-        solenoid = new JoystickButton(driveStick, Port.SOLENOID);
+        invertDt = new JoystickButton(driveStick, Port.INVERT_DT);
+        // solenoid = new JoystickButton(driveStick, Port.SOLENOID);
         ballFire = new JoystickButton(auxStick, Port.BALL_FIRE);
         liftUp = new JoystickButton(auxStick, Port.LIFT_UP);
         liftDown = new JoystickButton(auxStick, Port.LIFT_DOWN);
+
+        hatchIn = new JoystickButton(auxStick, Port.HATCH_IN);
+        hatchOut = new JoystickButton(auxStick, Port.HATCH_OUT);
 
         intakeUp = new JoystickButton(auxStick, Port.INTAKE_UP);
         intakeDown = new JoystickButton(auxStick, Port.INTAKE_DOWN);

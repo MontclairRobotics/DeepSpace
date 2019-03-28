@@ -65,7 +65,7 @@ public class Intake implements Updatable {
                 motorPower = powerInput.get();
             }
             if (launch.get()) {
-                motorPower = -1;
+                motorPower = -.25;
             }
             motorModule.set(motorPower);
         }else{

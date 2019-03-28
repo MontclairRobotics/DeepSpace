@@ -84,9 +84,9 @@ public class Lift implements Updatable {
             }
         }else{
             module.set(override.get());
-//            if(Math.abs(override.get()) > 0.05){
-//                module.set(-.05);
-//            }
+            if(Math.abs(override.get()) < 0.05){
+                module.set(-.05);
+            }
         }
         Debug.msg("Lift Pos", pos);
         Debug.msg("Lift tics", module.getEnc().getTicks());

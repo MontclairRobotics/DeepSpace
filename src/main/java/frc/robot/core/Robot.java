@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import frc.robot.components.Hatch;
 import frc.robot.utils.FieldCentric;
 import frc.robot.utils.MecanumMapper;
 import frc.robot.utils.PressureRegulator;
@@ -76,9 +77,12 @@ public class Robot extends SprocketRobot {
     // Mechanisms
     Lift lift;
     Intake intake;
+    Hatch hatch;
 
     Compressor compressor;
-    SSolenoid solenoid;
+    Solenoid hatchExtension1;
+    Solenoid hatchExtension2;
+    Solenoid hatchFire;
 
     LimitSwitch mainLimit;
     LimitSwitch secondLimit;
@@ -144,7 +148,10 @@ public class Robot extends SprocketRobot {
 
         // Pneumatics
         compressor = new Compressor(20);
-        solenoid = new SSolenoid(new Solenoid(20, 3));
+        hatchExtension1 = new Solenoid(20, 3);
+        hatchExtension2 = new Solenoid(20, 4);
+        hatchFire = new Solenoid(20, 5);
+
         PressureRegulator p = new PressureRegulator(compressor);
         p.enable();
 
@@ -162,6 +169,7 @@ public class Robot extends SprocketRobot {
         ));
 
         // Intake
+
         intake = new Intake(
                 Control.AUX_LEFT_Y_AXIS,
                     Control.intakeUp,
@@ -176,14 +184,16 @@ public class Robot extends SprocketRobot {
                 ),
                 new LimitedMotor(Hardware.intake_rotate, () -> intakeLimit.get(), () ->  Hardware.intake_rotate_encoder.getTicks() > -100 )
                 //new LimitedMotor(Hardware.intake_rotate, () -> false/*Hardware.intake_rotate_encoder.getTicks() <  -546841*/, () ->  false/*Hardware.intake_rotate_encoder.getTicks() > -100*/)
-
         );
+
+        hatch = new Hatch(Control.hatchOut, Control.hatchIn, hatchExtension1, hatchExtension2, hatchFire);
+
+
 
 
         // BUTTONS
         ToggleButton fieldCentricButton = new ToggleButton(Control.driveStick, Control.Port.FIELD_CENTRIC, fieldCentric);
         ToggleButton gyroLockButton = new ToggleButton(Control.driveStick, Control.Port.GYRO_LOCK, lock);
-        ToggleButton solenoidButton = new ToggleButton(Control.auxStick, Control.Port.SOLENOID, solenoid);
         addAutoMode(new AutoMode("Teleop", new DriveTime(2, .5), new TeleopState(this)));
         // addAutoMode(new AutoMode("Path test", new PathState("Test"), new TeleopState(this)));
 
