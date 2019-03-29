@@ -3,9 +3,11 @@ package frc.robot.components;
 import edu.wpi.first.wpilibj.Solenoid;
 import org.montclairrobotics.sprocket.control.Button;
 import org.montclairrobotics.sprocket.control.ButtonAction;
+import org.montclairrobotics.sprocket.loop.Priority;
 import org.montclairrobotics.sprocket.loop.Updatable;
 import org.montclairrobotics.sprocket.states.MultiState;
 import org.montclairrobotics.sprocket.states.StateMachine;
+import org.montclairrobotics.sprocket.loop.Updater;
 
 public class Hatch implements Updatable {
     private Solenoid extension1;
@@ -24,7 +26,7 @@ public class Hatch implements Updatable {
         this.extension1 = extension1;
         this.extension2 = extension2;
         this.fire = fire;
-        fireSequence = new StateMachine(
+        fireSequence = new StateMachine(false, 
                 // Retract first Part
                 new SolenoidState(extension1, false, .25),
                 // Retract fire
@@ -48,6 +50,7 @@ public class Hatch implements Updatable {
                 intake();
             }
         });
+        Updater.add(this, Priority.LOW);
     }
 
     @Override
@@ -62,6 +65,6 @@ public class Hatch implements Updatable {
     private void intake(){
         extension1.set(true);
         extension2.set(true);
-        fire.set(true);
+        // fire.set(true);
     }
 }
