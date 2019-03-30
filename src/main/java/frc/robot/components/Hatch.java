@@ -11,12 +11,14 @@ import org.montclairrobotics.sprocket.loop.Updater;
 
 public class Hatch implements Updatable {
     private Solenoid extension1;
-    private Solenoid extension2;
+    // private Solenoid extension2;
     private Solenoid fire;
 
 
     private Button fireButton;
     private Button intakeButton;
+    private long fireStart;
+    private boolean fireing;
 
     StateMachine fireSequence;
 
@@ -24,19 +26,20 @@ public class Hatch implements Updatable {
         this.fireButton = fireButton;
         this.intakeButton = intakeButton;
         this.extension1 = extension1;
-        this.extension2 = extension2;
+        
+        //this.extension2 = extension2;
         this.fire = fire;
-        fireSequence = new StateMachine(false, 
-                // Retract first Part
-                new SolenoidState(extension1, false, .25),
-                // Retract fire
-                new SolenoidState(fire, true, .25),
-                // Retract second stage and bring in fire pistons
-                new MultiState(
-                        new SolenoidState(extension2, false, .25),
-                        new SolenoidState(fire, false, 0)
-                )
-        );
+        // fireSequence = new StateMachine(false, 
+        //         // Retract first Part
+        //         new SolenoidState(extension1, false, .25),
+        //         // Retract fire
+        //         new SolenoidState(fire, true, .25),
+        //         // Retract second stage and bring in fire pistons
+        //         new MultiState(
+        //                 new SolenoidState(extension1, false, .25),
+        //                 new SolenoidState(fire, false, 0)
+        //         )
+        // );
 
         fireButton.setPressAction(new ButtonAction() {
             @Override
@@ -55,16 +58,19 @@ public class Hatch implements Updatable {
 
     @Override
     public void update() {
-        fireSequence.stateUpdate();
+        if(fireing && System.currentTimeMillis() - fireStart > 500){
+            fire.set(true);
+            fireing = false;
+        }
     }
 
     private void fire(){
-        fireSequence.start();
+        extension1.set(false);
+        fireStart = System.currentTimeMillis();
+        fireing = true;
     }
 
     private void intake(){
         extension1.set(true);
-        extension2.set(true);
-        // fire.set(true);
     }
 }

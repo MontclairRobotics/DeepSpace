@@ -81,12 +81,13 @@ public class Robot extends SprocketRobot {
 
     Compressor compressor;
     Solenoid hatchExtension1;
-    Solenoid hatchExtension2;
+    // Solenoid hatchExtension2;
     Solenoid hatchFire;
 
     LimitSwitch mainLimit;
     LimitSwitch secondLimit;
     LimitSwitch intakeLimit;
+    LimitedEncoder rotateEncoder;
 
     @Override
     public void robotInit(){
@@ -149,8 +150,8 @@ public class Robot extends SprocketRobot {
         // Pneumatics
         compressor = new Compressor(20);
         hatchExtension1 = new Solenoid(20, 3);
-        hatchExtension2 = new Solenoid(20, 4);
-        hatchFire = new Solenoid(20, 5);
+        // hatchExtension2 = new Solenoid(20, 4);
+        hatchFire = new Solenoid(20, 1);
 
         PressureRegulator p = new PressureRegulator(compressor);
         p.enable();
@@ -169,7 +170,7 @@ public class Robot extends SprocketRobot {
         ));
 
         // Intake
-
+        rotateEncoder = new LimitedEncoder(Hardware.intake_rotate_encoder, -546841, 0);
         intake = new Intake(
                 Control.AUX_LEFT_Y_AXIS,
                     Control.intakeUp,
@@ -182,11 +183,11 @@ public class Robot extends SprocketRobot {
                     new Motor(Hardware.intake_left),
                     new Motor(Hardware.intake_right)
                 ),
-                new LimitedMotor(Hardware.intake_rotate, () -> intakeLimit.get(), () ->  Hardware.intake_rotate_encoder.getTicks() > -100 )
+                new LimitedMotor(Hardware.intake_rotate, intakeLimit::get, rotateEncoder::getHigh)
                 //new LimitedMotor(Hardware.intake_rotate, () -> false/*Hardware.intake_rotate_encoder.getTicks() <  -546841*/, () ->  false/*Hardware.intake_rotate_encoder.getTicks() > -100*/)
         );
 
-        hatch = new Hatch(Control.hatchOut, Control.hatchIn, hatchExtension1, hatchExtension2, hatchFire);
+        hatch = new Hatch(Control.hatchOut, Control.hatchIn, hatchExtension1, null, hatchFire);
 
 
 
@@ -216,7 +217,7 @@ public class Robot extends SprocketRobot {
         Debug.msg("second lift encoder", Hardware.second_lift_encoder.getTicks());
         Debug.msg("Lift Encoder", Hardware.lift_encoder.getTicks());
         Debug.msg("Lift Diff", Hardware.t_encoder.getTicks()-Math.abs(Hardware.lift_encoder.getTicks()));
-        Debug.msg("Rotate Encoder", Hardware.intake_rotate_encoder.getTicks());
+        Debug.msg("Rotate Encoder", rotateEncoder.get());
         if(secondLimit.get()){
             Hardware.second_lift_encoder.reset();
         }
@@ -226,5 +227,8 @@ public class Robot extends SprocketRobot {
         }
         Debug.msg("Intake up", Control.intakeUp.get());
         Debug.msg("Intake down", Control.intakeDown.get());
+        if(intakeLimit.get()){
+            rotateEncoder.resetHigh();
+        }
     }
 }
