@@ -3,20 +3,34 @@ package frc.robot.core;
 
 import java.util.ArrayList;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import frc.robot.components.Hatch;
 import frc.robot.utils.FieldCentric;
+import frc.robot.utils.MecanumMapper;
 import frc.robot.utils.PressureRegulator;
 import org.montclairrobotics.sprocket.SprocketRobot;
-import org.montclairrobotics.sprocket.control.ButtonAction;
+import org.montclairrobotics.sprocket.auto.AutoMode;
+import org.montclairrobotics.sprocket.auto.states.DriveTime;
+import org.montclairrobotics.sprocket.control.DashboardInput;
+import frc.robot.components.Intake;
+import frc.robot.components.Lift;
+import frc.robot.utils.*;
 import org.montclairrobotics.sprocket.control.ToggleButton;
 import org.montclairrobotics.sprocket.drive.*;
+import org.montclairrobotics.sprocket.drive.steps.Deadzone;
 import org.montclairrobotics.sprocket.drive.steps.GyroCorrection;
 import org.montclairrobotics.sprocket.drive.steps.Sensitivity;
 import org.montclairrobotics.sprocket.drive.utils.GyroLock;
 import org.montclairrobotics.sprocket.geometry.Degrees;
 import org.montclairrobotics.sprocket.geometry.Polar;
 import org.montclairrobotics.sprocket.geometry.XY;
+import org.montclairrobotics.sprocket.motors.Module;
 import org.montclairrobotics.sprocket.motors.Motor;
+import org.montclairrobotics.sprocket.motors.SEncoder;
 import org.montclairrobotics.sprocket.pipeline.Step;
+import org.montclairrobotics.sprocket.utils.CameraServers;
 import org.montclairrobotics.sprocket.utils.Debug;
 import org.montclairrobotics.sprocket.utils.PID;
 
@@ -49,21 +63,38 @@ public class Robot extends SprocketRobot {
 
     DriveTrain driveTrain;
 
+    // Drive Train Steps
     GyroCorrection correction;
     GyroLock lock;
     FieldCentric fieldCentric;
+
+
+
     Sensitivity sensitivity;
+    VisionCorrection visionCorrection;
+    // Orientation orientation;
+
+    // Mechanisms
+    Lift lift;
+    Intake intake;
+    Hatch hatch;
 
     Compressor compressor;
-    Solenoid solenoid;
+    Solenoid hatchExtension1;
+    // Solenoid hatchExtension2;
+    Solenoid hatchFire;
 
+    LimitSwitch mainLimit;
+    LimitSwitch secondLimit;
+    LimitSwitch intakeLimit;
+    LimitedEncoder rotateEncoder;
 
     @Override
     public void robotInit(){
         // Initialization
         Hardware.init();
         Control.init();
-
+        CameraServer.getInstance().startAutomaticCapture();
 
         // Drivetrain code
         DriveTrainBuilder dtBuilder = new DriveTrainBuilder();
@@ -90,57 +121,114 @@ public class Robot extends SprocketRobot {
         correction = new GyroCorrection(Hardware.gyro, new PID(-0.3, 0, -0.00035), 90, 1);
         fieldCentric = new FieldCentric(correction);
         lock = new GyroLock(correction);
-        sensitivity = new Sensitivity(0.3);
+        //orientation = new Orientation(correction);
+        sensitivity = new Sensitivity(0.4, .1);
         correction.reset();
 
         // Add drive train steps
         ArrayList<Step<DTTarget>> steps = new ArrayList<>();
-        steps.add(correction);
-        steps.add(fieldCentric);
+        NetworkTableInstance table = NetworkTableInstance.getDefault();
+        visionCorrection = new VisionCorrection(new HatchInput(), new PID(.01, 0, 0));
+        VisionCorrection tapeVisionCorrection = new VisionCorrection(new GripTapeInput(), new PID(1, 0, -.01));
+        // UltrasonicCorrection ultrasonicCorrection = new UltrasonicCorrection(new UltrasonicSensor(8), 1000, new PID(.01, 0, 0));
+        // visionCorrection.setTarget(200); // TODO: Test and tune
+        tapeVisionCorrection.setTarget(120);
+
+        new ToggleButton(Control.driveStick, Control.Port.AUTO_TAPE, visionCorrection);
+        // new ToggleButton(Control.driveStick, Control.Port.AUTO_TAPE, tapeVisionCorrection);
+
+        // steps.add(visionCorrection);
+
+        // steps.add(orientation);
+        steps.add(tapeVisionCorrection);
         steps.add(sensitivity);
+        steps.add(fieldCentric);
+        steps.add(correction);
+        steps.add(new Deadzone(0.01, 0.01));
         driveTrain.setPipeline(new DTPipeline(steps));
 
         // Pneumatics
-        compressor = new Compressor(0);
-        solenoid = new Solenoid(3);
+        compressor = new Compressor(20);
+        hatchExtension1 = new Solenoid(20, 3);
+        // hatchExtension2 = new Solenoid(20, 4);
+        hatchFire = new Solenoid(20, 1);
+
         PressureRegulator p = new PressureRegulator(compressor);
         p.enable();
+
+        mainLimit = new LimitSwitch(9, true);
+        secondLimit = new LimitSwitch(8, true);
+        intakeLimit = new LimitSwitch(23, false);
+        // Lift
+        lift = new Lift(Control.AUX_RIGHT_Y_AXIS, Control.liftUp, Control.liftDown, new Module(
+                Hardware.lift_encoder, // Todo: Ticks Per inch
+                new PID(.5, .001, .01),
+                Module.MotorInputType.PERCENT,
+                // new LimitedMotor(Hardware.lift_1, mainLimit, () -> Hardware.lift_encoder.getTicks() > 10000000),
+                new LimitedMotor(Hardware.lift_2, mainLimit, () -> Hardware.lift_encoder.getTicks() < -600000),
+                new LimitedMotor(Hardware.lift_3, secondLimit, () -> Hardware.second_lift_encoder.getTicks() >  330000.0)
+        ));
+
+        // Intake
+        rotateEncoder = new LimitedEncoder(Hardware.intake_rotate_encoder, -546841, 0);
+        intake = new Intake(
+                Control.AUX_LEFT_Y_AXIS,
+                    Control.intakeUp,
+                    Control.intakeDown
+                ,
+                Control.ballFire, new Module(
+                    null,
+                    null,
+                    Module.MotorInputType.PERCENT,
+                    new Motor(Hardware.intake_left),
+                    new Motor(Hardware.intake_right)
+                ),
+                new LimitedMotor(Hardware.intake_rotate, intakeLimit::get, rotateEncoder::getHigh)
+                //new LimitedMotor(Hardware.intake_rotate, () -> false/*Hardware.intake_rotate_encoder.getTicks() <  -546841*/, () ->  false/*Hardware.intake_rotate_encoder.getTicks() > -100*/)
+        );
+
+        hatch = new Hatch(Control.hatchOut, Control.hatchIn, hatchExtension1, null, hatchFire);
+
+
 
 
         // BUTTONS
         ToggleButton fieldCentricButton = new ToggleButton(Control.driveStick, Control.Port.FIELD_CENTRIC, fieldCentric);
+        ToggleButton gyroLockButton = new ToggleButton(Control.driveStick, Control.Port.GYRO_LOCK, lock);
+        addAutoMode(new AutoMode("Teleop", new DriveTime(2, .5), new TeleopState(this)));
+        // addAutoMode(new AutoMode("Path test", new PathState("Test"), new TeleopState(this)));
 
-        Control.solenoid.setPressAction(new ButtonAction(){
-            @Override
-            public void onAction(){
-                solenoid.set(false);
-            }
-        });
-        Control.solenoid.setOffAction(new ButtonAction(){
-            @Override
-            public void onAction(){
-                solenoid.set(true);
-            }
-        });
+    }
 
-        Control.gyroLockButton.setPressAction(new ButtonAction(){
-            @Override
-            public void onAction() {
-                lock.enable();
-            }
-        });
-        Control.gyroLockButton.setOffAction(new ButtonAction(){
-            @Override
-            public void onAction(){
-                lock.disable();
-            }
-        });
+    @Override
+    public void userTeleopInit() {
+        Hardware.intake_rotate_encoder.reset();
     }
 
     @Override
     public void update() {
         // Debug information
         Debug.msg("Pressure Switch Valve", compressor.getPressureSwitchValue());
-        Debug.msg("Comrpessor Current", compressor.getCompressorCurrent());
+        Debug.msg("Compressor Current", compressor.getCompressorCurrent());
+
+        mainLimit.get();
+        secondLimit.get();
+        Debug.msg("zero lift encoder", Hardware.t_encoder.getTicks());
+        Debug.msg("second lift encoder", Hardware.second_lift_encoder.getTicks());
+        Debug.msg("Lift Encoder", Hardware.lift_encoder.getTicks());
+        Debug.msg("Lift Diff", Hardware.t_encoder.getTicks()-Math.abs(Hardware.lift_encoder.getTicks()));
+        Debug.msg("Rotate Encoder", rotateEncoder.get());
+        if(secondLimit.get()){
+            Hardware.second_lift_encoder.reset();
+        }
+        if(mainLimit.get()){
+            Hardware.lift_encoder.reset();
+            Hardware.t_encoder.reset();
+        }
+        Debug.msg("Intake up", Control.intakeUp.get());
+        Debug.msg("Intake down", Control.intakeDown.get());
+        if(intakeLimit.get()){
+            rotateEncoder.resetHigh();
+        }
     }
 }
